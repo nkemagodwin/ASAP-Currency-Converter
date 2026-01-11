@@ -4360,7 +4360,7 @@ const GlobalStyles = () => (
         }
       `}
     </style>
-    <footer className="app-footer">
+    <footer className="app-footer" align="center">
       © <span>{new Date().getFullYear()}</span> ASAP~PRICE. All rights reserved.
       <br/>
       <span>Powered By Royzeenet</span>

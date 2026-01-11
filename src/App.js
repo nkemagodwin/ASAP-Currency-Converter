@@ -289,7 +289,7 @@ const Notification = ({ message, type, onClose }) => {
   };
 
   return (
-    <div style={{
+    <div className="notification" style={{
       position: 'fixed',
       top: '20px',
       right: '20px',
@@ -345,8 +345,8 @@ const Loader = ({ size = 20, color = '#667eea' }) => (
   }} />
 );
 
-const Card = ({ children, darkMode, style = {} }) => (
-  <div style={{
+const Card = ({ children, darkMode, style = {}, className = '' }) => (
+  <div className={`card ${className}`} style={{
     background: darkMode ? '#1e293b' : 'white',
     borderRadius: '12px',
     padding: '20px',
@@ -434,23 +434,16 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
   const quickAmounts = [1, 10, 50, 100, 500, 1000, 5000, 10000];
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+    <div className="converter-grid">
       {/* Left Column: Converter */}
-      <Card darkMode={darkMode} style={{ gridColumn: 'span 2' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ 
-            marginTop: 0, 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '10px', 
-            color: '#667eea',
-            fontSize: '20px',
-            fontWeight: '600'
-          }}>
+      <Card darkMode={darkMode} className="converter-main">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
+          <h2 className="section-title">
             💱 Currency Converter
           </h2>
           <button
             onClick={handleSaveConversion}
+            className="header-button"
             style={{
               padding: '8px 16px',
               background: darkMode ? '#334155' : '#f1f5f9',
@@ -464,54 +457,24 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
               gap: '8px',
               transition: 'all 0.2s ease'
             }}
-            className="header-button"
           >
             💾 Save Conversion
           </button>
         </div>
 
         {/* Converter Input Section */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: '1fr auto 1fr', 
-          gap: '20px',
-          alignItems: 'center',
-          marginBottom: '30px'
-        }}>
+        <div className="converter-input-section">
           {/* From Currency */}
-          <div>
-            <label style={{ 
-              display: 'block', 
-              marginBottom: '8px', 
-              color: darkMode ? '#cbd5e1' : '#475569', 
-              fontSize: '14px',
-              fontWeight: '500'
-            }}>
+          <div className="converter-from">
+            <label className="input-label">
               From
             </label>
-            <div style={{ 
-              display: 'flex', 
-              gap: '10px',
-              marginBottom: '10px'
-            }}>
-              <div style={{ 
-                flex: 1,
-                position: 'relative'
-              }}>
+            <div className="currency-select-row">
+              <div className="select-wrapper">
                 <select
                   value={fromCurrency}
                   onChange={(e) => setFromCurrency(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '12px 40px 12px 16px',
-                    borderRadius: '8px',
-                    border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-                    background: darkMode ? '#0f172a' : '#f8fafc',
-                    color: 'inherit',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    appearance: 'none'
-                  }}
+                  className="currency-select"
                 >
                   <option value="">Select Currency</option>
                   {currencies.map(currency => (
@@ -520,29 +483,14 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
                     </option>
                   ))}
                 </select>
-                <div style={{
-                  position: 'absolute',
-                  right: '12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  color: darkMode ? '#94a3b8' : '#64748b'
-                }}>
+                <div className="select-arrow">
                   ▼
                 </div>
               </div>
               {!favorites.includes(fromCurrency) ? (
                 <button
                   onClick={() => handleAddToFavorites(fromCurrency)}
-                  style={{
-                    padding: '12px',
-                    background: darkMode ? '#334155' : '#f1f5f9',
-                    border: 'none',
-                    borderRadius: '8px',
-                    color: 'inherit',
-                    cursor: 'pointer',
-                    fontSize: '20px',
-                    transition: 'all 0.2s ease'
-                  }}
+                  className="favorite-button"
                   title="Add to favorites"
                 >
                     ⭐
@@ -550,16 +498,7 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
               ) : (
                 <button
                   onClick={() => handleRemoveFromFavorites(fromCurrency)}
-                  style={{
-                    padding: '12px',
-                    background: darkMode ? '#334155' : '#f1f5f9',
-                    border: 'none',
-                    borderRadius: '8px',
-                    color: '#fbbf24',
-                    cursor: 'pointer',
-                    fontSize: '20px',
-                    transition: 'all 0.2s ease'
-                  }}
+                  className="favorite-button active"
                   title="Remove from favorites"
                 >
                     ★
@@ -567,108 +506,50 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
               )}
             </div>
             
-            <div style={{ position: 'relative' }}>
+            <div className="amount-input-wrapper">
               <input
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(Math.max(0, parseFloat(e.target.value) || 0))}
-                style={{
-                  width: '100%',
-                  padding: '16px 20px',
-                  paddingLeft: '60px',
-                  borderRadius: '8px',
-                  border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-                  background: darkMode ? '#0f172a' : '#f8fafc',
-                  color: 'inherit',
-                  fontSize: '24px',
-                  fontWeight: '700',
-                  transition: 'all 0.2s ease'
-                }}
+                className="amount-input"
                 min="0"
                 step="0.01"
               />
-              <div style={{
-                position: 'absolute',
-                left: '20px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: '#667eea',
-                fontWeight: '600',
-                fontSize: '16px'
-              }}>
+              <div className="currency-code">
                 {fromCurrency}
               </div>
             </div>
           </div>
 
           {/* Swap Button */}
-          <div style={{ 
-            display: 'flex', 
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '10px'
-          }}>
+          <div className="swap-section">
             <button
               onClick={handleSwapCurrencies}
               disabled={isSwapping}
+              className="swap-button"
+              title="Swap currencies"
               style={{
-                padding: '16px',
-                background: darkMode ? '#334155' : '#f1f5f9',
-                border: 'none',
-                borderRadius: '50%',
-                color: '#667eea',
-                cursor: 'pointer',
-                fontSize: '24px',
-                transition: 'all 0.3s ease',
                 transform: isSwapping ? 'rotate(180deg)' : 'rotate(0deg)'
               }}
-              title="Swap currencies"
             >
               🔄
             </button>
-            <div style={{
-              fontSize: '12px',
-              color: darkMode ? '#94a3b8' : '#64748b',
-              textAlign: 'center'
-            }}>
+            <div className="rate-display">
               1 {fromCurrency} = {exchangeRate.toFixed(6)} {toCurrency}
             </div>
           </div>
 
           {/* To Currency */}
-          <div>
-            <label style={{ 
-              display: 'block', 
-              marginBottom: '8px', 
-              color: darkMode ? '#cbd5e1' : '#475569', 
-              fontSize: '14px',
-              fontWeight: '500'
-            }}>
+          <div className="converter-to">
+            <label className="input-label">
               To
             </label>
-            <div style={{ 
-              display: 'flex', 
-              gap: '10px',
-              marginBottom: '10px'
-            }}>
-              <div style={{ 
-                flex: 1,
-                position: 'relative'
-              }}>
+            <div className="currency-select-row">
+              <div className="select-wrapper">
                 <select
                   value={toCurrency}
                   onChange={(e) => setToCurrency(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '12px 40px 12px 16px',
-                    borderRadius: '8px',
-                    border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-                    background: darkMode ? '#0f172a' : '#f8fafc',
-                    color: 'inherit',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    appearance: 'none'
-                  }}
+                  className="currency-select"
                 >
                   <option value="">Select Currency</option>
                   {currencies.map(currency => (
@@ -677,29 +558,14 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
                     </option>
                   ))}
                 </select>
-                <div style={{
-                  position: 'absolute',
-                  right: '12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  color: darkMode ? '#94a3b8' : '#64748b'
-                }}>
+                <div className="select-arrow">
                   ▼
                 </div>
               </div>
               {!favorites.includes(toCurrency) ? (
                 <button
                   onClick={() => handleAddToFavorites(toCurrency)}
-                  style={{
-                    padding: '12px',
-                    background: darkMode ? '#334155' : '#f1f5f9',
-                    border: 'none',
-                    borderRadius: '8px',
-                    color: 'inherit',
-                    cursor: 'pointer',
-                    fontSize: '20px',
-                    transition: 'all 0.2s ease'
-                  }}
+                  className="favorite-button"
                   title="Add to favorites"
                 >
                     ⭐
@@ -707,16 +573,7 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
               ) : (
                 <button
                   onClick={() => handleRemoveFromFavorites(toCurrency)}
-                  style={{
-                    padding: '12px',
-                    background: darkMode ? '#334155' : '#f1f5f9',
-                    border: 'none',
-                    borderRadius: '8px',
-                    color: '#fbbf24',
-                    cursor: 'pointer',
-                    fontSize: '20px',
-                    transition: 'all 0.2s ease'
-                  }}
+                  className="favorite-button active"
                   title="Remove from favorites"
                 >
                     ★
@@ -724,27 +581,8 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
               )}
             </div>
             
-            <div style={{ 
-              position: 'relative',
-              background: darkMode ? '#0f172a' : '#f8fafc',
-              border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-              borderRadius: '8px',
-              padding: '16px 20px',
-              paddingLeft: '60px',
-              fontSize: '24px',
-              fontWeight: '700',
-              color: '#10b981',
-              minHeight: '64px'
-            }}>
-              <div style={{
-                position: 'absolute',
-                left: '20px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: '#10b981',
-                fontWeight: '600',
-                fontSize: '16px'
-              }}>
+            <div className="converted-amount-display">
+              <div className="currency-code">
                 {toCurrency}
               </div>
               {formatNumber(convertedAmount, 6)}
@@ -753,44 +591,16 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
         </div>
 
         {/* Quick Amounts */}
-        <div style={{ marginBottom: '30px' }}>
-          <label style={{ 
-            display: 'block', 
-            marginBottom: '12px', 
-            color: darkMode ? '#cbd5e1' : '#475569', 
-            fontSize: '14px',
-            fontWeight: '500'
-          }}>
+        <div className="quick-amounts-section">
+          <label className="input-label">
             Quick Amounts ({fromCurrency})
           </label>
-          <div style={{ 
-            display: 'flex', 
-            flexWrap: 'wrap', 
-            gap: '10px' 
-          }}>
+          <div className="quick-amounts-grid">
             {quickAmounts.map(quickAmount => (
               <button
                 key={quickAmount}
                 onClick={() => handleQuickAmount(quickAmount)}
-                style={{
-                  padding: '10px 20px',
-                  background: amount === quickAmount 
-                    ? '#667eea' 
-                    : (darkMode ? '#334155' : '#f1f5f9'),
-                  border: amount === quickAmount 
-                    ? '2px solid #667eea' 
-                    : `1px solid ${darkMode ? '#475569' : '#e2e8f0'}`,
-                  borderRadius: '20px',
-                  color: amount === quickAmount ? 'white' : 'inherit',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  transition: 'all 0.2s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-                className="quick-amount-button"
+                className={`quick-amount-button ${amount === quickAmount ? 'active' : ''}`}
               >
                 {quickAmount >= 1000 ? formatLargeNumber(quickAmount) : formatNumber(quickAmount)}
               </button>
@@ -799,51 +609,20 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
         </div>
 
         {/* Exchange Rate Details */}
-        <div style={{
-          background: darkMode ? '#0f172a' : '#f8fafc',
-          padding: '20px',
-          borderRadius: '8px',
-          border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-          marginBottom: '20px'
-        }}>
-          <h3 style={{ 
-            marginTop: 0, 
-            marginBottom: '15px', 
-            color: '#667eea', 
-            fontSize: '16px',
-            fontWeight: '600'
-          }}>
+        <div className="rate-details">
+          <h3 className="rate-details-title">
             📊 Exchange Rate Details
           </h3>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(2, 1fr)', 
-            gap: '15px',
-            fontSize: '14px'
-          }}>
+          <div className="rate-details-grid">
             <div>
-              <div style={{ color: darkMode ? '#94a3b8' : '#64748b', marginBottom: '4px' }}>Current Rate</div>
-              <div style={{ 
-                fontSize: '20px', 
-                fontWeight: '700',
-                color: '#667eea',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
+              <div className="rate-label">Current Rate</div>
+              <div className="rate-value">
                 1 {fromCurrency} = {exchangeRate.toFixed(6)} {toCurrency}
               </div>
             </div>
             <div>
-              <div style={{ color: darkMode ? '#94a3b8' : '#64748b', marginBottom: '4px' }}>Inverse Rate</div>
-              <div style={{ 
-                fontSize: '20px', 
-                fontWeight: '700',
-                color: '#10b981',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
+              <div className="rate-label">Inverse Rate</div>
+              <div className="rate-value inverse">
                 1 {toCurrency} = {inverseRate.toFixed(6)} {fromCurrency}
               </div>
             </div>
@@ -852,60 +631,28 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
       </Card>
 
       {/* Right Column: Favorites & History */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div className="converter-sidebar">
         {/* Favorite Currencies */}
-        <Card darkMode={darkMode}>
-          <h3 style={{ 
-            marginTop: 0, 
-            marginBottom: '15px', 
-            color: '#667eea', 
-            fontSize: '16px',
-            fontWeight: '600',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
+        <Card darkMode={darkMode} className="favorites-card">
+          <h3 className="section-subtitle">
             ⭐ Favorite Currencies
           </h3>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', 
-            gap: '10px'
-          }}>
+          <div className="favorites-grid">
             {favoriteCurrencies.map(currency => (
               <button
                 key={currency.code}
                 onClick={() => {
                   setFromCurrency(currency.code);
                   if (toCurrency === currency.code) {
-                    // If trying to convert to same currency, switch to USD
                     setToCurrency('USD');
                   }
                 }}
-                style={{
-                  padding: '12px',
-                  background: fromCurrency === currency.code 
-                    ? '#667eea' 
-                    : (darkMode ? '#334155' : '#f1f5f9'),
-                  border: fromCurrency === currency.code 
-                    ? '2px solid #667eea' 
-                    : `1px solid ${darkMode ? '#475569' : '#e2e8f0'}`,
-                  borderRadius: '8px',
-                  color: fromCurrency === currency.code ? 'white' : 'inherit',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '6px',
-                  transition: 'all 0.2s ease'
-                }}
-                className="currency-button"
+                className={`currency-button ${fromCurrency === currency.code ? 'active' : ''}`}
               >
-                <div style={{ fontSize: '20px' }}>{currency.flag}</div>
+                <div className="currency-flag">{currency.flag}</div>
                 <div>
-                  <div style={{ fontWeight: '600', fontSize: '16px' }}>{currency.code}</div>
-                  <div style={{ fontSize: '11px', color: darkMode ? '#94a3b8' : '#64748b' }}>
+                  <div className="currency-code-text">{currency.code}</div>
+                  <div className="currency-rate">
                     {formatNumber(currency.rate, 4)}
                   </div>
                 </div>
@@ -913,37 +660,20 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
             ))}
           </div>
           {favoriteCurrencies.length === 0 && (
-            <div style={{ 
-              textAlign: 'center', 
-              padding: '20px', 
-              color: darkMode ? '#94a3b8' : '#64748b' 
-            }}>
-              <div style={{ fontSize: '32px', marginBottom: '10px', opacity: 0.5 }}>⭐</div>
+            <div className="empty-state">
+              <div className="empty-icon">⭐</div>
               <p>No favorite currencies yet</p>
-              <p style={{ fontSize: '12px' }}>Click the star button to add favorites</p>
+              <p className="empty-subtitle">Click the star button to add favorites</p>
             </div>
           )}
         </Card>
 
         {/* Quick Conversions */}
-        <Card darkMode={darkMode}>
-          <h3 style={{ 
-            marginTop: 0, 
-            marginBottom: '15px', 
-            color: '#667eea', 
-            fontSize: '16px',
-            fontWeight: '600',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
+        <Card darkMode={darkMode} className="quick-conversions-card">
+          <h3 className="section-subtitle">
             ⚡ Quick Conversions
           </h3>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
-            gap: '10px'
-          }}>
+          <div className="quick-conversions-grid">
             {[
               { from: 'USD', to: 'EUR' },
               { from: 'EUR', to: 'GBP' },
@@ -964,41 +694,17 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
                     setToCurrency(pair.to);
                     setAmount(100);
                   }}
-                  style={{
-                    padding: '12px',
-                    background: darkMode ? '#334155' : '#f1f5f9',
-                    border: `1px solid ${darkMode ? '#475569' : '#e2e8f0'}`,
-                    borderRadius: '8px',
-                    color: 'inherit',
-                    cursor: 'pointer',
-                    fontSize: '12px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '4px',
-                    transition: 'all 0.2s ease',
-                    textAlign: 'left'
-                  }}
                   className="quick-conversion-button"
                 >
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: '4px'
-                  }}>
-                    <span style={{ fontSize: '16px', fontWeight: '600' }}>
+                  <div className="conversion-header">
+                    <span className="conversion-pair">
                       {pair.from} → {pair.to}
                     </span>
-                    <span style={{ fontSize: '12px', color: '#10b981', fontWeight: '600' }}>
+                    <span className="conversion-rate">
                       {rate.toFixed(4)}
                     </span>
                   </div>
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between',
-                    fontSize: '11px',
-                    color: darkMode ? '#94a3b8' : '#64748b'
-                  }}>
+                  <div className="conversion-details">
                     <span>{fromCurr?.flag} 100 {pair.from}</span>
                     <span>=</span>
                     <span>{toCurr?.flag} {formatNumber(TradingEngine.convertCurrency(100, pair.from, pair.to, currencies), 2)} {pair.to}</span>
@@ -1011,128 +717,49 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
       </div>
 
       {/* Conversion History */}
-      <Card darkMode={darkMode}>
-        <h3 style={{ 
-          marginTop: 0, 
-          marginBottom: '15px', 
-          color: '#667eea', 
-          fontSize: '16px',
-          fontWeight: '600',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
-        }}>
+      <Card darkMode={darkMode} className="history-card">
+        <h3 className="section-subtitle">
           📋 Recent Conversions
         </h3>
         {conversionHistory.length === 0 ? (
-          <div style={{ 
-            textAlign: 'center', 
-            padding: '40px 20px', 
-            color: darkMode ? '#94a3b8' : '#64748b' 
-          }}>
-            <div style={{ fontSize: '48px', marginBottom: '20px', opacity: 0.5 }}>📊</div>
+          <div className="empty-state">
+            <div className="empty-icon">📊</div>
             <p style={{ fontSize: '14px' }}>No conversion history yet</p>
-            <p style={{ fontSize: '12px' }}>Convert currencies to see history here</p>
+            <p className="empty-subtitle">Convert currencies to see history here</p>
           </div>
         ) : (
-          <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <div className="history-table-container">
+            <table className="history-table">
               <thead>
-                <tr style={{ 
-                  borderBottom: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-                  position: 'sticky',
-                  top: 0,
-                  background: darkMode ? '#1e293b' : 'white'
-                }}>
-                  <th style={{ 
-                    padding: '8px', 
-                    textAlign: 'left', 
-                    color: darkMode ? '#94a3b8' : '#64748b', 
-                    fontSize: '11px',
-                    fontWeight: '600'
-                  }}>Time</th>
-                  <th style={{ 
-                    padding: '8px', 
-                    textAlign: 'left', 
-                    color: darkMode ? '#94a3b8' : '#64748b', 
-                    fontSize: '11px',
-                    fontWeight: '600'
-                  }}>From</th>
-                  <th style={{ 
-                    padding: '8px', 
-                    textAlign: 'left', 
-                    color: darkMode ? '#94a3b8' : '#64748b', 
-                    fontSize: '11px',
-                    fontWeight: '600'
-                  }}>To</th>
-                  <th style={{ 
-                    padding: '8px', 
-                    textAlign: 'left', 
-                    color: darkMode ? '#94a3b8' : '#64748b', 
-                    fontSize: '11px',
-                    fontWeight: '600'
-                  }}>Amount</th>
-                  <th style={{ 
-                    padding: '8px', 
-                    textAlign: 'left', 
-                    color: darkMode ? '#94a3b8' : '#64748b', 
-                    fontSize: '11px',
-                    fontWeight: '600'
-                  }}>Result</th>
+                <tr>
+                  <th className="table-header">Time</th>
+                  <th className="table-header">From</th>
+                  <th className="table-header">To</th>
+                  <th className="table-header">Amount</th>
+                  <th className="table-header">Result</th>
                 </tr>
               </thead>
               <tbody>
                 {conversionHistory.map((conversion) => (
                   <tr 
                     key={conversion.id}
-                    style={{ 
-                      borderBottom: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-                      transition: 'background-color 0.2s'
-                    }}
                     className="history-row"
                   >
-                    <td style={{ 
-                      padding: '8px', 
-                      fontSize: '11px', 
-                      color: darkMode ? '#94a3b8' : '#64748b',
-                      whiteSpace: 'nowrap'
-                    }}>
+                    <td className="history-time">
                       {new Date(conversion.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </td>
-                    <td style={{ 
-                      padding: '8px', 
-                      fontSize: '12px', 
-                      fontWeight: '600',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}>
+                    <td className="history-currency">
                       {currencies.find(c => c.code === conversion.from)?.flag}
                       {conversion.from}
                     </td>
-                    <td style={{ 
-                      padding: '8px', 
-                      fontSize: '12px', 
-                      fontWeight: '600',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}>
+                    <td className="history-currency">
                       {currencies.find(c => c.code === conversion.to)?.flag}
                       {conversion.to}
                     </td>
-                    <td style={{ 
-                      padding: '8px', 
-                      fontSize: '12px'
-                    }}>
+                    <td className="history-amount">
                       {formatNumber(conversion.amount, 2)}
                     </td>
-                    <td style={{ 
-                      padding: '8px', 
-                      fontSize: '12px',
-                      color: '#10b981',
-                      fontWeight: '600'
-                    }}>
+                    <td className="history-result">
                       {formatNumber(conversion.convertedAmount, 2)}
                     </td>
                   </tr>
@@ -1144,19 +771,6 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
         {conversionHistory.length > 0 && (
           <button
             onClick={() => setConversionHistory([])}
-            style={{
-              width: '100%',
-              padding: '10px',
-              background: 'rgba(239, 68, 68, 0.1)',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              borderRadius: '8px',
-              color: '#ef4444',
-              cursor: 'pointer',
-              fontSize: '12px',
-              fontWeight: '600',
-              marginTop: '15px',
-              transition: 'all 0.2s ease'
-            }}
             className="clear-history-button"
           >
             🗑️ Clear History
@@ -1167,54 +781,21 @@ const CurrencyConverter = ({ currencies, darkMode }) => {
   );
 };
 
-// =============== TRADING COMPONENTS (truncated for brevity) ===============
+// =============== TRADING COMPONENTS ===============
 const CurrencyPairSelector = ({ selectedPair, onSelect, darkMode }) => (
-  <div style={{ marginBottom: '20px' }}>
-    <label style={{ 
-      display: 'block', 
-      marginBottom: '8px', 
-      color: darkMode ? '#cbd5e1' : '#475569', 
-      fontSize: '14px',
-      fontWeight: '500'
-    }}>
+  <div className="pair-selector">
+    <label className="input-label">
       Select Trading Pair
     </label>
-    <div style={{ 
-      display: 'grid', 
-      gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', 
-      gap: '10px' 
-    }}>
+    <div className="pairs-grid">
       {TRADING_PAIRS.map(({ pair, spread }) => (
         <button
           key={pair}
           onClick={() => onSelect(pair)}
-          style={{
-            padding: '12px',
-            background: selectedPair === pair 
-              ? (darkMode ? '#667eea' : '#667eea')
-              : (darkMode ? '#334155' : '#f1f5f9'),
-            border: selectedPair === pair 
-              ? '2px solid #667eea' 
-              : `1px solid ${darkMode ? '#475569' : '#e2e8f0'}`,
-            borderRadius: '8px',
-            color: selectedPair === pair ? 'white' : 'inherit',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: '500',
-            transition: 'all 0.2s ease',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '4px'
-          }}
-          className="pair-button"
+          className={`pair-button ${selectedPair === pair ? 'active' : ''}`}
         >
-          <span style={{ fontSize: '16px', fontWeight: '600' }}>{pair}</span>
-          <span style={{ 
-            fontSize: '12px', 
-            color: selectedPair === pair ? 'rgba(255,255,255,0.8)' : '#94a3b8' 
-          }}>
+          <span className="pair-name">{pair}</span>
+          <span className="pair-spread">
             Spread: {spread.toFixed(4)}
           </span>
         </button>
@@ -1272,87 +853,51 @@ const OrderBook = ({ pair, currencies, darkMode }) => {
   );
 
   return (
-    <Card darkMode={darkMode}>
-      <h3 style={{ 
-        marginTop: 0, 
-        marginBottom: '15px', 
-        color: '#667eea',
-        fontSize: '16px',
-        fontWeight: '600'
-      }}>
+    <Card darkMode={darkMode} className="order-book-card">
+      <h3 className="section-subtitle">
         📊 Order Book - {pair}
       </h3>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+      <div className="order-book-grid">
         {/* Bids */}
         <div>
-          <div style={{ 
-            color: '#10b981', 
-            fontSize: '12px', 
-            fontWeight: '600',
-            marginBottom: '10px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: '0 8px'
-          }}>
+          <div className="order-book-header">
             <span>Bid (Buy)</span>
             <span>Volume</span>
           </div>
           {bids.map((bid, i) => (
             <div 
               key={i}
+              className="order-book-row bid-row"
               style={{
-                position: 'relative',
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '8px',
                 background: darkMode 
                   ? `linear-gradient(to left, rgba(16, 185, 129, 0.15) ${(bid.total / maxVolume) * 100}%, transparent 0%)`
-                  : `linear-gradient(to left, rgba(16, 185, 129, 0.1) ${(bid.total / maxVolume) * 100}%, transparent 0%)`,
-                borderRadius: '4px',
-                marginBottom: '4px',
-                fontSize: '12px',
-                alignItems: 'center'
+                  : `linear-gradient(to left, rgba(16, 185, 129, 0.1) ${(bid.total / maxVolume) * 100}%, transparent 0%)`
               }}
             >
-              <span style={{ color: '#10b981', fontWeight: '500' }}>{bid.price.toFixed(5)}</span>
-              <span style={{ color: darkMode ? '#cbd5e1' : '#475569' }}>{bid.volume.toFixed(2)}</span>
+              <span className="bid-price">{bid.price.toFixed(5)}</span>
+              <span className="order-volume">{bid.volume.toFixed(2)}</span>
             </div>
           ))}
         </div>
         
         {/* Asks */}
         <div>
-          <div style={{ 
-            color: '#ef4444', 
-            fontSize: '12px', 
-            fontWeight: '600',
-            marginBottom: '10px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: '0 8px'
-          }}>
+          <div className="order-book-header ask-header">
             <span>Ask (Sell)</span>
             <span>Volume</span>
           </div>
           {asks.map((ask, i) => (
             <div 
               key={i}
+              className="order-book-row ask-row"
               style={{
-                position: 'relative',
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '8px',
                 background: darkMode
                   ? `linear-gradient(to left, rgba(239, 68, 68, 0.15) ${(ask.total / maxVolume) * 100}%, transparent 0%)`
-                  : `linear-gradient(to left, rgba(239, 68, 68, 0.1) ${(ask.total / maxVolume) * 100}%, transparent 0%)`,
-                borderRadius: '4px',
-                marginBottom: '4px',
-                fontSize: '12px',
-                alignItems: 'center'
+                  : `linear-gradient(to left, rgba(239, 68, 68, 0.1) ${(ask.total / maxVolume) * 100}%, transparent 0%)`
               }}
             >
-              <span style={{ color: '#ef4444', fontWeight: '500' }}>{ask.price.toFixed(5)}</span>
-              <span style={{ color: darkMode ? '#cbd5e1' : '#475569' }}>{ask.volume.toFixed(2)}</span>
+              <span className="ask-price">{ask.price.toFixed(5)}</span>
+              <span className="order-volume">{ask.volume.toFixed(2)}</span>
             </div>
           ))}
         </div>
@@ -1510,35 +1055,17 @@ const AdvancedTradePanel = ({
   }, [portfolio.totalValue]);
 
   return (
-    <Card darkMode={darkMode}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2 style={{ 
-          marginTop: 0, 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '10px', 
-          color: '#667eea',
-          fontSize: '20px',
-          fontWeight: '600'
-        }}>
+    <Card darkMode={darkMode} className="trade-panel-card">
+      <div className="trade-panel-header">
+        <h2 className="section-title">
           🚀 Advanced Trading
         </h2>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '12px', color: darkMode ? '#94a3b8' : '#64748b' }}>
+        <div className="trade-panel-actions">
+          <span className="balance-display">
             Balance: ${formatNumber(portfolio.balance)}
           </span>
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
-            style={{
-              padding: '6px 12px',
-              background: darkMode ? '#334155' : '#f1f5f9',
-              border: 'none',
-              borderRadius: '6px',
-              color: 'inherit',
-              cursor: 'pointer',
-              fontSize: '12px',
-              transition: 'all 0.2s ease'
-            }}
             className="toggle-button"
           >
             {showAdvanced ? 'Hide Advanced' : 'Show Advanced'}
@@ -1553,101 +1080,36 @@ const AdvancedTradePanel = ({
       />
       
       {/* Current Rate Display */}
-      <div style={{ 
-        marginBottom: '20px',
-        padding: '15px',
-        background: darkMode ? '#0f172a' : '#f8fafc',
-        borderRadius: '8px',
-        border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`
-      }}>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '8px'
-        }}>
-          <span style={{ 
-            color: darkMode ? '#cbd5e1' : '#475569', 
-            fontSize: '14px' 
-          }}>
+      <div className="current-rate-display">
+        <div className="rate-header">
+          <span className="rate-label">
             Current Rate:
           </span>
-          <span style={{ 
-            fontSize: '24px', 
-            fontWeight: '700',
-            color: '#667eea'
-          }}>
+          <span className="rate-value-large">
             {currentRate.toFixed(6)}
           </span>
         </div>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between',
-          fontSize: '12px',
-          color: darkMode ? '#94a3b8' : '#64748b'
-        }}>
+        <div className="rate-details">
           <span>Spread: {(TRADING_PAIRS.find(p => p.pair === pair)?.spread || 0).toFixed(4)}</span>
           <span>Min Trade: {TRADING_PAIRS.find(p => p.pair === pair)?.minTrade || 100}</span>
         </div>
       </div>
       
       {/* Trade Direction */}
-      <div style={{ marginBottom: '20px' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '8px', 
-          color: darkMode ? '#cbd5e1' : '#475569', 
-          fontSize: '14px',
-          fontWeight: '500'
-        }}>
+      <div className="trade-direction-section">
+        <label className="input-label">
           Direction
         </label>
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div className="direction-buttons">
           <button
             onClick={() => setTradeConfig(prev => ({ ...prev, direction: TRADE_DIRECTION.BUY }))}
-            style={{
-              flex: 1,
-              padding: '12px',
-              background: tradeConfig.direction === TRADE_DIRECTION.BUY 
-                ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' 
-                : (darkMode ? '#334155' : '#f1f5f9'),
-              border: 'none',
-              borderRadius: '8px',
-              color: tradeConfig.direction === TRADE_DIRECTION.BUY ? 'white' : 'inherit',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: '600',
-              transition: 'all 0.2s ease',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px'
-            }}
-            className="direction-button"
+            className={`direction-button ${tradeConfig.direction === TRADE_DIRECTION.BUY ? 'active buy' : ''}`}
           >
             📈 BUY
           </button>
           <button
             onClick={() => setTradeConfig(prev => ({ ...prev, direction: TRADE_DIRECTION.SELL }))}
-            style={{
-              flex: 1,
-              padding: '12px',
-              background: tradeConfig.direction === TRADE_DIRECTION.SELL 
-                ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' 
-                : (darkMode ? '#334155' : '#f1f5f9'),
-              border: 'none',
-              borderRadius: '8px',
-              color: tradeConfig.direction === TRADE_DIRECTION.SELL ? 'white' : 'inherit',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: '600',
-              transition: 'all 0.2s ease',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px'
-            }}
-            className="direction-button"
+            className={`direction-button ${tradeConfig.direction === TRADE_DIRECTION.SELL ? 'active sell' : ''}`}
           >
             📉 SELL
           </button>
@@ -1655,50 +1117,22 @@ const AdvancedTradePanel = ({
       </div>
       
       {/* Order Type Selection */}
-      <div style={{ marginBottom: '20px' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '8px', 
-          color: darkMode ? '#cbd5e1' : '#475569', 
-          fontSize: '14px',
-          fontWeight: '500'
-        }}>
+      <div className="order-type-section">
+        <label className="input-label">
           Order Type
         </label>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', 
-          gap: '8px' 
-        }}>
+        <div className="order-type-grid">
           {ORDER_TYPES.map(type => (
             <button
               key={type.id}
               onClick={() => setTradeConfig(prev => ({ ...prev, orderType: type.id }))}
-              style={{
-                padding: '12px',
-                background: tradeConfig.orderType === type.id 
-                  ? '#667eea' 
-                  : (darkMode ? '#334155' : '#f1f5f9'),
-                border: tradeConfig.orderType === type.id 
-                  ? '2px solid #667eea' 
-                  : `1px solid ${darkMode ? '#475569' : '#e2e8f0'}`,
-                borderRadius: '8px',
-                color: tradeConfig.orderType === type.id ? 'white' : 'inherit',
-                cursor: 'pointer',
-                fontSize: '12px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '6px',
-                transition: 'all 0.2s ease'
-              }}
-              className="order-type-button"
+              className={`order-type-button ${tradeConfig.orderType === type.id ? 'active' : ''}`}
               title={type.description}
             >
-              <span style={{ fontSize: '18px' }}>{type.icon}</span>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontWeight: '600' }}>{type.name}</div>
-                <div style={{ fontSize: '11px', opacity: 0.8 }}>Fee: {(type.fee * 100).toFixed(2)}%</div>
+              <span className="order-icon">{type.icon}</span>
+              <div className="order-info">
+                <div className="order-name">{type.name}</div>
+                <div className="order-fee">Fee: {(type.fee * 100).toFixed(2)}%</div>
               </div>
             </button>
           ))}
@@ -1706,25 +1140,16 @@ const AdvancedTradePanel = ({
       </div>
       
       {/* Amount Input */}
-      <div style={{ marginBottom: '20px' }}>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          marginBottom: '8px' 
-        }}>
-          <label style={{ 
-            color: darkMode ? '#cbd5e1' : '#475569', 
-            fontSize: '14px',
-            fontWeight: '500'
-          }}>
+      <div className="amount-section">
+        <div className="amount-header">
+          <label className="input-label">
             Amount ({pair.split('/')[0]})
           </label>
-          <span style={{ fontSize: '12px', color: darkMode ? '#94a3b8' : '#94a3b8' }}>
+          <span className="available-amount">
             Available: {formatNumber(portfolio.currencies[pair.split('/')[0]] || 0, 2)}
           </span>
         </div>
-        <div style={{ position: 'relative' }}>
+        <div className="amount-input-wrapper">
           <input
             type="number"
             value={tradeConfig.amount}
@@ -1732,57 +1157,20 @@ const AdvancedTradePanel = ({
               ...prev, 
               amount: Math.max(0, parseFloat(e.target.value) || 0) 
             }))}
-            style={{
-              width: '100%',
-              padding: '12px 16px',
-              paddingLeft: '40px',
-              borderRadius: '8px',
-              border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-              background: darkMode ? '#0f172a' : '#f8fafc',
-              color: 'inherit',
-              fontSize: '16px',
-              fontWeight: '600',
-              transition: 'all 0.2s ease'
-            }}
+            className="trade-amount-input"
             min="0"
             step="0.01"
           />
-          <span style={{
-            position: 'absolute',
-            left: '16px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            color: '#667eea',
-            fontWeight: '600'
-          }}>
+          <span className="amount-currency">
             $
           </span>
         </div>
-        <div style={{ 
-          display: 'flex', 
-          flexWrap: 'wrap', 
-          gap: '8px', 
-          marginTop: '10px' 
-        }}>
+        <div className="quick-amount-buttons">
           {quickAmounts.map(amount => (
             <button
               key={amount}
               onClick={() => setTradeConfig(prev => ({ ...prev, amount }))}
-              style={{
-                padding: '6px 12px',
-                background: tradeConfig.amount === amount 
-                  ? '#667eea' 
-                  : (darkMode ? '#334155' : '#f1f5f9'),
-                border: tradeConfig.amount === amount 
-                  ? '2px solid #667eea' 
-                  : `1px solid ${darkMode ? '#475569' : '#e2e8f0'}`,
-                borderRadius: '20px',
-                color: tradeConfig.amount === amount ? 'white' : 'inherit',
-                cursor: 'pointer',
-                fontSize: '12px',
-                transition: 'all 0.2s ease'
-              }}
-              className="quick-amount-button"
+              className={`quick-trade-amount-button ${tradeConfig.amount === amount ? 'active' : ''}`}
             >
               {formatNumber(amount)}
             </button>
@@ -1795,14 +1183,8 @@ const AdvancedTradePanel = ({
         <>
           {/* Order Prices */}
           {(tradeConfig.orderType === 'limit' || tradeConfig.orderType === 'stop_limit') && (
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '8px', 
-                color: darkMode ? '#cbd5e1' : '#475569', 
-                fontSize: '14px',
-                fontWeight: '500'
-              }}>
+            <div className="advanced-setting">
+              <label className="input-label">
                 Limit Price ({pair.split('/')[1]})
               </label>
               <input
@@ -1812,16 +1194,7 @@ const AdvancedTradePanel = ({
                   ...prev, 
                   limitPrice: parseFloat(e.target.value) || 0 
                 }))}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  borderRadius: '8px',
-                  border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-                  background: darkMode ? '#0f172a' : '#f8fafc',
-                  color: 'inherit',
-                  fontSize: '16px',
-                  transition: 'all 0.2s ease'
-                }}
+                className="advanced-input"
                 placeholder="Enter limit price"
                 step="0.000001"
               />
@@ -1829,14 +1202,8 @@ const AdvancedTradePanel = ({
           )}
           
           {(tradeConfig.orderType === 'stop' || tradeConfig.orderType === 'stop_limit') && (
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '8px', 
-                color: darkMode ? '#cbd5e1' : '#475569', 
-                fontSize: '14px',
-                fontWeight: '500'
-              }}>
+            <div className="advanced-setting">
+              <label className="input-label">
                 Stop Price ({pair.split('/')[1]})
               </label>
               <input
@@ -1846,16 +1213,7 @@ const AdvancedTradePanel = ({
                   ...prev, 
                   stopPrice: parseFloat(e.target.value) || 0 
                 }))}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  borderRadius: '8px',
-                  border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-                  background: darkMode ? '#0f172a' : '#f8fafc',
-                  color: 'inherit',
-                  fontSize: '16px',
-                  transition: 'all 0.2s ease'
-                }}
+                className="advanced-input"
                 placeholder="Enter stop price"
                 step="0.000001"
               />
@@ -1863,25 +1221,13 @@ const AdvancedTradePanel = ({
           )}
           
           {/* Risk Management */}
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ 
-              display: 'block', 
-              marginBottom: '8px', 
-              color: darkMode ? '#cbd5e1' : '#475569', 
-              fontSize: '14px',
-              fontWeight: '500'
-            }}>
+          <div className="risk-management-section">
+            <label className="input-label">
               Risk Management
             </label>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <div className="risk-inputs-grid">
               <div>
-                <label style={{ 
-                  fontSize: '12px', 
-                  color: darkMode ? '#94a3b8' : '#64748b', 
-                  marginBottom: '4px', 
-                  display: 'block',
-                  fontWeight: '500'
-                }}>
+                <label className="risk-label">
                   Take Profit
                 </label>
                 <input
@@ -1891,28 +1237,13 @@ const AdvancedTradePanel = ({
                     ...prev, 
                     takeProfit: parseFloat(e.target.value) || 0 
                   }))}
-                  style={{
-                    width: '100%',
-                    padding: '8px',
-                    borderRadius: '8px',
-                    border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-                    background: darkMode ? '#0f172a' : '#f8fafc',
-                    color: 'inherit',
-                    fontSize: '14px',
-                    transition: 'all 0.2s ease'
-                  }}
+                  className="risk-input"
                   placeholder="TP"
                   step="0.000001"
                 />
               </div>
               <div>
-                <label style={{ 
-                  fontSize: '12px', 
-                  color: darkMode ? '#94a3b8' : '#64748b', 
-                  marginBottom: '4px', 
-                  display: 'block',
-                  fontWeight: '500'
-                }}>
+                <label className="risk-label">
                   Stop Loss
                 </label>
                 <input
@@ -1922,53 +1253,24 @@ const AdvancedTradePanel = ({
                     ...prev, 
                     stopLoss: parseFloat(e.target.value) || 0 
                   }))}
-                  style={{
-                    width: '100%',
-                    padding: '8px',
-                    borderRadius: '8px',
-                    border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-                    background: darkMode ? '#0f172a' : '#f8fafc',
-                    color: 'inherit',
-                    fontSize: '14px',
-                    transition: 'all 0.2s ease'
-                  }}
+                  className="risk-input"
                   placeholder="SL"
                   step="0.000001"
                 />
               </div>
             </div>
             
-            <div style={{ marginTop: '10px' }}>
-              <label style={{ 
-                fontSize: '12px', 
-                color: darkMode ? '#94a3b8' : '#64748b', 
-                marginBottom: '4px', 
-                display: 'block',
-                fontWeight: '500'
-              }}>
+            <div className="risk-level-section">
+              <label className="risk-label">
                 Risk Level
               </label>
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div className="risk-level-buttons">
                 {RISK_LEVELS.map(level => (
                   <button
                     key={level.id}
                     onClick={() => setTradeConfig(prev => ({ ...prev, riskLevel: level.id }))}
-                    style={{
-                      flex: 1,
-                      padding: '8px',
-                      background: tradeConfig.riskLevel === level.id 
-                        ? level.color 
-                        : (darkMode ? '#334155' : '#f1f5f9'),
-                      border: tradeConfig.riskLevel === level.id 
-                        ? `2px solid ${level.color}` 
-                        : `1px solid ${darkMode ? '#475569' : '#e2e8f0'}`,
-                      borderRadius: '8px',
-                      color: tradeConfig.riskLevel === level.id ? 'white' : 'inherit',
-                      cursor: 'pointer',
-                      fontSize: '12px',
-                      transition: 'all 0.2s ease'
-                    }}
-                    className="risk-level-button"
+                    className={`risk-level-button ${tradeConfig.riskLevel === level.id ? 'active' : ''}`}
+                    style={{ backgroundColor: tradeConfig.riskLevel === level.id ? level.color : undefined }}
                   >
                     {level.name}
                   </button>
@@ -1977,14 +1279,8 @@ const AdvancedTradePanel = ({
             </div>
             
             {/* Leverage */}
-            <div style={{ marginTop: '10px' }}>
-              <label style={{ 
-                fontSize: '12px', 
-                color: darkMode ? '#94a3b8' : '#64748b', 
-                marginBottom: '4px', 
-                display: 'block',
-                fontWeight: '500'
-              }}>
+            <div className="leverage-section">
+              <label className="risk-label">
                 Leverage (1:{tradeConfig.leverage})
               </label>
               <input
@@ -1996,13 +1292,6 @@ const AdvancedTradePanel = ({
                   ...prev, 
                   leverage: parseInt(e.target.value) 
                 }))}
-                style={{
-                  width: '100%',
-                  height: '6px',
-                  background: darkMode ? '#334155' : '#e2e8f0',
-                  borderRadius: '3px',
-                  outline: 'none'
-                }}
                 className="trade-slider"
               />
             </div>
@@ -2012,91 +1301,60 @@ const AdvancedTradePanel = ({
       
       {/* Trade Calculations */}
       {!isCalculating && calculations.entryPrice && (
-        <div style={{
-          background: darkMode ? '#0f172a' : '#f8fafc',
-          padding: '15px',
-          borderRadius: '8px',
-          marginBottom: '20px',
-          border: `1px solid ${calculations.isValid ? '#10b981' : '#ef4444'}`
-        }}>
-          <h4 style={{ 
-            marginTop: 0, 
-            marginBottom: '10px', 
-            color: '#667eea', 
-            fontSize: '14px',
-            fontWeight: '600',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
+        <div className={`trade-summary ${calculations.isValid ? 'valid' : 'invalid'}`}>
+          <h4 className="summary-title">
             📊 Trade Summary
             {calculations.isValid && (
-              <span style={{
-                fontSize: '10px',
-                background: '#10b981',
-                color: 'white',
-                padding: '2px 8px',
-                borderRadius: '10px',
-                fontWeight: '500'
-              }}>
+              <span className="valid-badge">
                 Valid
               </span>
             )}
           </h4>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(2, 1fr)', 
-            gap: '10px', 
-            fontSize: '12px' 
-          }}>
+          <div className="summary-grid">
             <div>
-              <div style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>Entry Price:</div>
-              <div style={{ fontWeight: '600', color: '#667eea' }}>{calculations.entryPrice.toFixed(6)}</div>
+              <div className="summary-label">Entry Price:</div>
+              <div className="summary-value primary">{calculations.entryPrice.toFixed(6)}</div>
             </div>
             <div>
-              <div style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>Position Size:</div>
-              <div style={{ fontWeight: '600' }}>{calculations.positionSize.toFixed(2)}</div>
+              <div className="summary-label">Position Size:</div>
+              <div className="summary-value">{calculations.positionSize.toFixed(2)}</div>
             </div>
             <div>
-              <div style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>Margin Required:</div>
-              <div style={{ fontWeight: '600' }}>${calculations.margin.toFixed(2)}</div>
+              <div className="summary-label">Margin Required:</div>
+              <div className="summary-value">${calculations.margin.toFixed(2)}</div>
             </div>
             <div>
-              <div style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>Spread Cost:</div>
-              <div style={{ fontWeight: '600', color: '#f59e0b' }}>${calculations.spreadCost.toFixed(2)}</div>
+              <div className="summary-label">Spread Cost:</div>
+              <div className="summary-value warning">${calculations.spreadCost.toFixed(2)}</div>
             </div>
             <div>
-              <div style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>Risk/Reward:</div>
-              <div style={{ 
-                fontWeight: '600',
-                color: calculations.riskRewardRatio >= 2 ? '#10b981' : 
-                       calculations.riskRewardRatio >= 1 ? '#f59e0b' : '#ef4444'
-              }}>
+              <div className="summary-label">Risk/Reward:</div>
+              <div className={`summary-value ${
+                calculations.riskRewardRatio >= 2 ? 'success' : 
+                calculations.riskRewardRatio >= 1 ? 'warning' : 'error'
+              }`}>
                 {calculations.riskRewardRatio.toFixed(2)}:1
               </div>
             </div>
             <div>
-              <div style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>Potential Profit:</div>
-              <div style={{ 
-                fontWeight: '600',
-                color: calculations.potentialProfit >= 0 ? '#10b981' : '#ef4444'
-              }}>
+              <div className="summary-label">Potential Profit:</div>
+              <div className={`summary-value ${
+                calculations.potentialProfit >= 0 ? 'success' : 'error'
+              }`}>
                 ${calculations.potentialProfit.toFixed(2)}
               </div>
             </div>
             <div>
-              <div style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>Potential Loss:</div>
-              <div style={{ 
-                fontWeight: '600',
-                color: calculations.potentialLoss <= calculations.maxAllowedLoss ? '#10b981' : '#ef4444'
-              }}>
+              <div className="summary-label">Potential Loss:</div>
+              <div className={`summary-value ${
+                calculations.potentialLoss <= calculations.maxAllowedLoss ? 'success' : 'error'
+              }`}>
                 ${calculations.potentialLoss.toFixed(2)}
-            </div>
+              </div>
             </div>
             <div>
-              <div style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>Risk Level:</div>
-              <div style={{ 
-                fontWeight: '600',
+              <div className="summary-label">Risk Level:</div>
+              <div className="summary-value" style={{ 
                 color: RISK_LEVELS.find(r => r.id === tradeConfig.riskLevel)?.color
               }}>
                 {tradeConfig.riskLevel.toUpperCase()}
@@ -2108,32 +1366,11 @@ const AdvancedTradePanel = ({
       
       {/* Error Messages */}
       {errors.length > 0 && (
-        <div style={{
-          background: 'rgba(239, 68, 68, 0.1)',
-          padding: '12px',
-          borderRadius: '8px',
-          marginBottom: '20px',
-          border: '1px solid #ef4444'
-        }}>
-          <h4 style={{ 
-            marginTop: 0, 
-            marginBottom: '8px', 
-            color: '#ef4444', 
-            fontSize: '14px',
-            fontWeight: '600',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
+        <div className="error-messages">
+          <h4 className="error-title">
             ⚠️ Trade Validation Errors
           </h4>
-          <ul style={{ 
-            margin: 0, 
-            paddingLeft: '20px', 
-            fontSize: '12px', 
-            color: '#ef4444',
-            lineHeight: '1.5'
-          }}>
+          <ul className="error-list">
             {errors.map((error, index) => (
               <li key={index}>{error}</li>
             ))}
@@ -2145,28 +1382,7 @@ const AdvancedTradePanel = ({
       <button
         onClick={handleExecuteTrade}
         disabled={errors.length > 0 || isCalculating}
-        style={{
-          width: '100%',
-          padding: '16px',
-          background: tradeConfig.direction === TRADE_DIRECTION.BUY
-            ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-            : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-          color: 'white',
-          border: 'none',
-          borderRadius: '8px',
-          fontSize: '16px',
-          fontWeight: '600',
-          cursor: errors.length > 0 ? 'not-allowed' : 'pointer',
-          opacity: errors.length > 0 ? 0.5 : 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '10px',
-          transition: 'all 0.2s ease',
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-        className="execute-button"
+        className={`execute-button ${tradeConfig.direction === TRADE_DIRECTION.BUY ? 'buy' : 'sell'}`}
       >
         {isCalculating ? (
           <>
@@ -2218,107 +1434,51 @@ const PortfolioDashboard = ({ portfolio, trades, darkMode }) => {
   const metrics = useMemo(() => calculateMetrics(), [calculateMetrics]);
 
   return (
-    <Card darkMode={darkMode}>
-      <h2 style={{ 
-        marginTop: 0, 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: '10px', 
-        color: '#667eea',
-        fontSize: '20px',
-        fontWeight: '600'
-      }}>
+    <Card darkMode={darkMode} className="portfolio-card">
+      <h2 className="section-title">
         💼 Portfolio Dashboard
       </h2>
       
       {/* Key Metrics */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
-        gap: '15px',
-        marginBottom: '20px'
-      }}>
-        <div style={{
-          padding: '15px',
-          background: darkMode ? '#0f172a' : '#f8fafc',
-          borderRadius: '8px',
-          textAlign: 'center',
-          border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`
-        }}>
-          <div style={{ fontSize: '12px', color: darkMode ? '#94a3b8' : '#64748b' }}>Total Value</div>
-          <div style={{ fontSize: '24px', fontWeight: '700', color: '#667eea' }}>
+      <div className="metrics-grid">
+        <div className="metric-card">
+          <div className="metric-label">Total Value</div>
+          <div className="metric-value primary">
             ${formatNumber(metrics.totalValue)}
           </div>
         </div>
         
-        <div style={{
-          padding: '15px',
-          background: darkMode ? '#0f172a' : '#f8fafc',
-          borderRadius: '8px',
-          textAlign: 'center',
-          border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`
-        }}>
-          <div style={{ fontSize: '12px', color: darkMode ? '#94a3b8' : '#64748b' }}>Total P&L</div>
-          <div style={{ 
-            fontSize: '24px', 
-            fontWeight: '700',
-            color: metrics.totalPnL >= 0 ? '#10b981' : '#ef4444'
-          }}>
+        <div className="metric-card">
+          <div className="metric-label">Total P&L</div>
+          <div className={`metric-value ${metrics.totalPnL >= 0 ? 'success' : 'error'}`}>
             {metrics.totalPnL >= 0 ? '+' : ''}${formatNumber(metrics.totalPnL)}
           </div>
         </div>
         
-        <div style={{
-          padding: '15px',
-          background: darkMode ? '#0f172a' : '#f8fafc',
-          borderRadius: '8px',
-          textAlign: 'center',
-          border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`
-        }}>
-          <div style={{ fontSize: '12px', color: darkMode ? '#94a3b8' : '#64748b' }}>Win Rate</div>
-          <div style={{ 
-            fontSize: '24px', 
-            fontWeight: '700',
-            color: metrics.winRate >= 50 ? '#10b981' : 
-                   metrics.winRate >= 30 ? '#f59e0b' : '#ef4444'
-          }}>
+        <div className="metric-card">
+          <div className="metric-label">Win Rate</div>
+          <div className={`metric-value ${
+            metrics.winRate >= 50 ? 'success' : 
+            metrics.winRate >= 30 ? 'warning' : 'error'
+          }`}>
             {formatNumber(metrics.winRate, 1)}%
           </div>
         </div>
         
-        <div style={{
-          padding: '15px',
-          background: darkMode ? '#0f172a' : '#f8fafc',
-          borderRadius: '8px',
-          textAlign: 'center',
-          border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`
-        }}>
-          <div style={{ fontSize: '12px', color: darkMode ? '#94a3b8' : '#64748b' }}>Daily P&L</div>
-          <div style={{ 
-            fontSize: '24px', 
-            fontWeight: '700',
-            color: metrics.dailyPnL >= 0 ? '#10b981' : '#ef4444'
-          }}>
+        <div className="metric-card">
+          <div className="metric-label">Daily P&L</div>
+          <div className={`metric-value ${metrics.dailyPnL >= 0 ? 'success' : 'error'}`}>
             {metrics.dailyPnL >= 0 ? '+' : ''}${formatNumber(metrics.dailyPnL)}
           </div>
         </div>
       </div>
       
       {/* Holdings */}
-      <div style={{ marginBottom: '20px' }}>
-        <h3 style={{ 
-          color: darkMode ? '#cbd5e1' : '#475569', 
-          fontSize: '16px', 
-          marginBottom: '15px',
-          fontWeight: '600'
-        }}>
+      <div className="holdings-section">
+        <h3 className="section-subtitle">
           💰 Current Holdings
         </h3>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '10px'
-        }}>
+        <div className="holdings-grid">
           {Object.entries(portfolio.currencies)
             .filter(([, amount]) => amount > 0)
             .map(([currency, amount]) => {
@@ -2329,31 +1489,20 @@ const PortfolioDashboard = ({ portfolio, trades, darkMode }) => {
               return (
                 <div 
                   key={currency}
-                  style={{
-                    padding: '12px',
-                    background: darkMode ? '#0f172a' : '#f8fafc',
-                    borderRadius: '8px',
-                    borderLeft: `4px solid ${currencyInfo?.color || '#667eea'}`,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    transition: 'transform 0.2s ease'
-                  }}
                   className="holding-item"
+                  style={{
+                    borderLeft: `4px solid ${currencyInfo?.color || '#667eea'}`
+                  }}
                 >
                   <div>
-                    <div style={{ fontWeight: '700', fontSize: '16px', color: '#667eea' }}>
-                      {currency}
-                    </div>
-                    <div style={{ fontSize: '12px', color: darkMode ? '#94a3b8' : '#64748b' }}>
-                      {currencyInfo?.name || 'Currency'}
-                    </div>
+                    <div className="holding-currency">{currency}</div>
+                    <div className="holding-name">{currencyInfo?.name || 'Currency'}</div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontWeight: '700', fontSize: '14px' }}>
+                  <div className="holding-details">
+                    <div className="holding-amount">
                       {formatNumber(amount)} {currency}
                     </div>
-                    <div style={{ fontSize: '12px', color: darkMode ? '#94a3b8' : '#64748b' }}>
+                    <div className="holding-value">
                       ${formatNumber(value)}
                     </div>
                   </div>
@@ -2364,14 +1513,7 @@ const PortfolioDashboard = ({ portfolio, trades, darkMode }) => {
       </div>
       
       {/* Quick Stats */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        paddingTop: '15px',
-        borderTop: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-        color: darkMode ? '#94a3b8' : '#64748b',
-        fontSize: '12px'
-      }}>
+      <div className="portfolio-stats">
         <div>
           <div>Total Trades: {trades.length}</div>
           <div>Open Positions: {trades.filter(t => t.status === TRADE_STATUS.FILLED && !t.exitPrice).length}</div>
@@ -2450,47 +1592,24 @@ const AdvancedTradeHistory = ({ trades, onCloseTrade, onCancelOrder, darkMode })
   }, [trades, filter, sortBy, sortOrder, searchTerm]);
 
   return (
-    <Card darkMode={darkMode}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2 style={{ 
-          marginTop: 0, 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '10px', 
-          color: '#667eea',
-          fontSize: '20px',
-          fontWeight: '600'
-        }}>
+    <Card darkMode={darkMode} className="trade-history-card">
+      <div className="trade-history-header">
+        <h2 className="section-title">
           📋 Trade History
         </h2>
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <div className="trade-history-controls">
           <input
             type="text"
             placeholder="Search trades..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              padding: '8px 12px',
-              borderRadius: '8px',
-              border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-              background: darkMode ? '#0f172a' : '#f8fafc',
-              color: 'inherit',
-              fontSize: '12px',
-              minWidth: '200px'
-            }}
+            className="trade-search"
           />
           
           <select 
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            style={{
-              padding: '8px 12px',
-              borderRadius: '8px',
-              border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-              background: darkMode ? '#0f172a' : '#f8fafc',
-              color: 'inherit',
-              fontSize: '12px'
-            }}
+            className="trade-filter"
           >
             <option value="all">All Trades</option>
             <option value="open">Open Positions</option>
@@ -2503,89 +1622,25 @@ const AdvancedTradeHistory = ({ trades, onCloseTrade, onCancelOrder, darkMode })
       </div>
       
       {filteredTrades.length === 0 ? (
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '40px 20px', 
-          color: darkMode ? '#94a3b8' : '#94a3b8' 
-        }}>
-          <div style={{ fontSize: '48px', marginBottom: '20px', opacity: 0.5 }}>📊</div>
-          <p style={{ fontSize: '18px', marginBottom: '10px', fontWeight: '500' }}>No trades found</p>
-          <p>Execute some trades to see your history here</p>
+        <div className="empty-state">
+          <div className="empty-icon">📊</div>
+          <p className="empty-title">No trades found</p>
+          <p className="empty-subtitle">Execute some trades to see your history here</p>
         </div>
       ) : (
-        <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div className="trade-history-table-container">
+          <table className="trade-history-table">
             <thead>
-              <tr style={{ 
-                borderBottom: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`, 
-                position: 'sticky', 
-                top: 0, 
-                background: darkMode ? '#1e293b' : 'white',
-                backdropFilter: 'blur(10px)'
-              }}>
-                <th style={{ 
-                  padding: '12px', 
-                  textAlign: 'left', 
-                  color: darkMode ? '#94a3b8' : '#64748b', 
-                  fontSize: '12px',
-                  fontWeight: '600'
-                }}>Time</th>
-                <th style={{ 
-                  padding: '12px', 
-                  textAlign: 'left', 
-                  color: darkMode ? '#94a3b8' : '#64748b', 
-                  fontSize: '12px',
-                  fontWeight: '600'
-                }}>Pair</th>
-                <th style={{ 
-                  padding: '12px', 
-                  textAlign: 'left', 
-                  color: darkMode ? '#94a3b8' : '#64748b', 
-                  fontSize: '12px',
-                  fontWeight: '600'
-                }}>Type</th>
-                <th style={{ 
-                  padding: '12px', 
-                  textAlign: 'left', 
-                  color: darkMode ? '#94a3b8' : '#64748b', 
-                  fontSize: '12px',
-                  fontWeight: '600'
-                }}>Status</th>
-                <th style={{ 
-                  padding: '12px', 
-                  textAlign: 'left', 
-                  color: darkMode ? '#94a3b8' : '#64748b', 
-                  fontSize: '12px',
-                  fontWeight: '600'
-                }}>Amount</th>
-                <th style={{ 
-                  padding: '12px', 
-                  textAlign: 'left', 
-                  color: darkMode ? '#94a3b8' : '#64748b', 
-                  fontSize: '12px',
-                  fontWeight: '600'
-                }}>Entry</th>
-                <th style={{ 
-                  padding: '12px', 
-                  textAlign: 'left', 
-                  color: darkMode ? '#94a3b8' : '#64748b', 
-                  fontSize: '12px',
-                  fontWeight: '600'
-                }}>Exit</th>
-                <th style={{ 
-                  padding: '12px', 
-                  textAlign: 'left', 
-                  color: darkMode ? '#94a3b8' : '#64748b', 
-                  fontSize: '12px',
-                  fontWeight: '600'
-                }}>P&L</th>
-                <th style={{ 
-                  padding: '12px', 
-                  textAlign: 'left', 
-                  color: darkMode ? '#94a3b8' : '#64748b', 
-                  fontSize: '12px',
-                  fontWeight: '600'
-                }}>Actions</th>
+              <tr>
+                <th className="table-header">Time</th>
+                <th className="table-header">Pair</th>
+                <th className="table-header">Type</th>
+                <th className="table-header">Status</th>
+                <th className="table-header">Amount</th>
+                <th className="table-header">Entry</th>
+                <th className="table-header">Exit</th>
+                <th className="table-header">P&L</th>
+                <th className="table-header">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -2597,149 +1652,71 @@ const AdvancedTradeHistory = ({ trades, onCloseTrade, onCancelOrder, darkMode })
                 return (
                   <tr 
                     key={trade.id}
-                    style={{ 
-                      borderBottom: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-                      backgroundColor: isOpen 
-                        ? (darkMode ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)')
-                        : profit > 0
-                          ? (darkMode ? 'rgba(16, 185, 129, 0.1)' : 'rgba(16, 185, 129, 0.05)')
-                          : profit < 0
-                            ? (darkMode ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.05)')
-                            : 'transparent',
-                      transition: 'background-color 0.3s'
-                    }}
-                    className="trade-row"
+                    className={`trade-row ${isOpen ? 'open' : profit > 0 ? 'profit' : profit < 0 ? 'loss' : ''}`}
                   >
-                    <td style={{ 
-                      padding: '12px', 
-                      fontSize: '12px', 
-                      color: darkMode ? '#cbd5e1' : '#475569',
-                      whiteSpace: 'nowrap'
-                    }}>
+                    <td className="trade-time">
                       {new Date(trade.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      <div style={{ fontSize: '11px', color: darkMode ? '#94a3b8' : '#64748b' }}>
+                      <div className="trade-date">
                         {new Date(trade.timestamp).toLocaleDateString()}
                       </div>
                     </td>
-                    <td style={{ padding: '12px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{
-                          background: trade.direction === TRADE_DIRECTION.BUY ? '#10b981' : '#ef4444',
-                          color: 'white',
-                          padding: '4px 8px',
-                          borderRadius: '4px',
-                          fontSize: '11px',
-                          fontWeight: '600',
-                          minWidth: '40px',
-                          textAlign: 'center'
-                        }}>
+                    <td className="trade-pair">
+                      <div className="trade-direction-indicator">
+                        <span className={`direction-badge ${trade.direction === TRADE_DIRECTION.BUY ? 'buy' : 'sell'}`}>
                           {trade.direction === TRADE_DIRECTION.BUY ? 'BUY' : 'SELL'}
                         </span>
-                        <span style={{ fontSize: '12px', fontWeight: '600' }}>
+                        <span className="pair-name">
                           {trade.pair}
                         </span>
                       </div>
                     </td>
-                    <td style={{ 
-                      padding: '12px', 
-                      fontSize: '12px', 
-                      color: darkMode ? '#94a3b8' : '#64748b' 
-                    }}>
+                    <td className="trade-type">
                       {ORDER_TYPES.find(ot => ot.id === trade.orderType)?.name || trade.orderType}
                     </td>
-                    <td style={{ padding: '12px' }}>
-                      <span style={{
-                        padding: '4px 8px',
-                        borderRadius: '4px',
-                        fontSize: '11px',
-                        fontWeight: '600',
-                        background: isOpen ? '#3b82f6' : 
-                                  isPending ? '#f59e0b' : 
-                                  profit > 0 ? '#10b981' : '#ef4444',
-                        color: 'white',
-                        display: 'inline-block',
-                        minWidth: '70px',
-                        textAlign: 'center'
-                      }}>
+                    <td className="trade-status">
+                      <span className={`status-badge ${
+                        isOpen ? 'open' : 
+                        isPending ? 'pending' : 
+                        profit > 0 ? 'profit' : 'loss'
+                      }`}>
                         {isOpen ? 'OPEN' : 
                          isPending ? 'PENDING' : 
                          profit > 0 ? 'WIN' : 'LOSS'}
                       </span>
                     </td>
-                    <td style={{ 
-                      padding: '12px', 
-                      fontSize: '12px', 
-                      fontWeight: '600' 
-                    }}>
+                    <td className="trade-amount">
                       {formatNumber(trade.amount)}
                     </td>
-                    <td style={{ 
-                      padding: '12px', 
-                      fontSize: '12px', 
-                      color: darkMode ? '#94a3b8' : '#64748b' 
-                    }}>
+                    <td className="trade-price">
                       {trade.entryPrice?.toFixed(5) || '-'}
                     </td>
-                    <td style={{ 
-                      padding: '12px', 
-                      fontSize: '12px', 
-                      color: darkMode ? '#94a3b8' : '#64748b' 
-                    }}>
+                    <td className="trade-price">
                       {trade.exitPrice?.toFixed(5) || '-'}
                     </td>
-                    <td style={{ padding: '12px' }}>
+                    <td className="trade-pnl">
                       {profit !== 0 ? (
-                        <span style={{
-                          color: profit > 0 ? '#10b981' : '#ef4444',
-                          fontWeight: '600',
-                          fontSize: '12px',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '4px'
-                        }}>
+                        <span className={`pnl-value ${profit > 0 ? 'profit' : 'loss'}`}>
                           {profit > 0 ? '▲' : '▼'}
                           ${Math.abs(profit).toFixed(2)}
                         </span>
                       ) : (
-                        <span style={{ color: darkMode ? '#94a3b8' : '#64748b', fontSize: '12px' }}>
+                        <span className="pnl-neutral">
                           -
                         </span>
                       )}
                     </td>
-                    <td style={{ padding: '12px' }}>
+                    <td className="trade-actions">
                       {isOpen ? (
                         <button
                           onClick={() => onCloseTrade(trade.id, trade.entryPrice * (1 + (Math.random() - 0.5) * 0.02))}
-                          style={{
-                            padding: '6px 12px',
-                            background: '#ef4444',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            fontSize: '11px',
-                            fontWeight: '600',
-                            transition: 'all 0.2s ease'
-                          }}
-                          className="action-button"
+                          className="action-button close"
                         >
                           Close
                         </button>
                       ) : isPending ? (
                         <button
                           onClick={() => onCancelOrder(trade.id)}
-                          style={{
-                            padding: '6px 12px',
-                            background: '#f59e0b',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            fontSize: '11px',
-                            fontWeight: '600',
-                            transition: 'all 0.2s ease'
-                          }}
-                          className="action-button"
+                          className="action-button cancel"
                         >
                           Cancel
                         </button>
@@ -2754,26 +1731,16 @@ const AdvancedTradeHistory = ({ trades, onCloseTrade, onCancelOrder, darkMode })
       )}
       
       {/* Summary */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        marginTop: '15px',
-        paddingTop: '15px',
-        borderTop: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-        color: darkMode ? '#94a3b8' : '#64748b',
-        fontSize: '12px'
-      }}>
+      <div className="trade-history-summary">
         <div>
           <div>Showing {filteredTrades.length} of {trades.length} trades</div>
           <div>Open Positions: {trades.filter(t => t.status === TRADE_STATUS.FILLED && !t.exitPrice).length}</div>
         </div>
         <div>
           <div>Total P&L: 
-            <span style={{ 
-              color: trades.reduce((sum, t) => sum + (t.profit || 0), 0) >= 0 ? '#10b981' : '#ef4444',
-              fontWeight: '600',
-              marginLeft: '5px'
-            }}>
+            <span className={`summary-pnl ${
+              trades.reduce((sum, t) => sum + (t.profit || 0), 0) >= 0 ? 'profit' : 'loss'
+            }`}>
               ${trades.reduce((sum, t) => sum + (t.profit || 0), 0).toFixed(2)}
             </span>
           </div>
@@ -2836,6 +1803,7 @@ const LiveCurrencySimulator = () => {
   const [selectedTimeFrame, setSelectedTimeFrame] = useState(TIME_FRAMES[1]);
   const [activeTab, setActiveTab] = useState('converter'); // Changed default to converter
   const [selectedPair, setSelectedPair] = useState('USD/EUR');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useMarketData(currencies, setCurrencies, setRateHistory, setLastUpdate, selectedTimeFrame);
 
@@ -3057,109 +2025,87 @@ const LiveCurrencySimulator = () => {
     return TradingEngine.calculatePairRate(base, quote, currencies);
   }, [selectedPair, currencies]);
 
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isMobileMenuOpen && !event.target.closest('.mobile-menu') && !event.target.closest('.mobile-menu-button')) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isMobileMenuOpen]);
+
   return (
-    <div style={{
-      backgroundColor: darkMode ? '#0f172a' : '#f8fafc',
-      color: darkMode ? '#ffffff' : '#1e293b',
-      minHeight: '100vh',
-      padding: '20px',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-      transition: 'background-color 0.3s, color 0.3s'
-    }}>
+    <div className={`app-container ${darkMode ? 'dark' : 'light'}`}>
+      {/* Mobile Menu Button */}
+      <button 
+        className="mobile-menu-button"
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      >
+        {isMobileMenuOpen ? '✕' : '☰'}
+      </button>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="mobile-menu-overlay">
+          <div className="mobile-menu">
+            {[
+              { id: 'converter', label: '💱 Converter', icon: '💱' },
+              { id: 'trade', label: '🚀 Trade', icon: '🚀' },
+              { id: 'portfolio', label: '💼 Portfolio', icon: '💼' },
+              { id: 'history', label: '📋 History', icon: '📋' },
+              { id: 'orders', label: '📊 Order Book', icon: '📊' }
+            ].map(({ id, label, icon }) => (
+              <button
+                key={id}
+                onClick={() => {
+                  setActiveTab(id);
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`mobile-tab-button ${activeTab === id ? 'active' : ''}`}
+              >
+                {icon} {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Header */}
-      <div style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        padding: '20px',
-        borderRadius: '12px',
-        marginBottom: '20px',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="app-header">
+        <div className="header-content">
           <div>
-            <h1 style={{ 
-              margin: 0, 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '10px',
-              fontSize: '24px',
-              fontWeight: '700'
-            }}>
+            <h1 className="app-title">
               🚀 Advanced Forex Trading Platform
             </h1>
-            <p style={{ 
-              margin: '5px 0 0 0', 
-              opacity: 0.9, 
-              fontSize: '14px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px'
-            }}>
+            <p className="app-subtitle">
               <span>Professional trading with risk management & currency conversion</span>
-              <span>•</span>
+              <span className="subtitle-separator">•</span>
               <span>Live Market</span>
-              <span>•</span>
+              <span className="subtitle-separator">•</span>
               <span>Portfolio: ${formatNumber(portfolio.totalValue)}</span>
             </p>
           </div>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <div className="header-actions">
             <button 
               onClick={() => setDarkMode(!darkMode)}
-              style={{
-                background: 'rgba(255,255,255,0.2)',
-                border: 'none',
-                borderRadius: '8px',
-                width: '40px',
-                height: '40px',
-                cursor: 'pointer',
-                color: 'white',
-                fontSize: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease'
-              }}
-              className="header-button"
+              className="header-button theme-toggle"
               title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {darkMode ? '🌞' : '🌙'}
             </button>
             <button
               onClick={resetPortfolio}
-              style={{
-                background: 'rgba(239, 68, 68, 0.2)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-                borderRadius: '8px',
-                padding: '8px 16px',
-                cursor: 'pointer',
-                color: 'white',
-                fontSize: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                transition: 'all 0.2s ease'
-              }}
-              className="header-button"
+              className="header-button reset-button"
               title="Reset Portfolio"
             >
               🔄 Reset
             </button>
             <button
               onClick={exportTrades}
-              style={{
-                background: 'rgba(16, 185, 129, 0.2)',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                borderRadius: '8px',
-                padding: '8px 16px',
-                cursor: 'pointer',
-                color: 'white',
-                fontSize: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                transition: 'all 0.2s ease'
-              }}
-              className="header-button"
+              className="header-button export-button"
               title="Export Trades"
             >
               📥 Export
@@ -3167,8 +2113,8 @@ const LiveCurrencySimulator = () => {
           </div>
         </div>
         
-        {/* Navigation Tabs */}
-        <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+        {/* Navigation Tabs - Desktop */}
+        <div className="tabs-container">
           {[
             { id: 'converter', label: '💱 Converter', icon: '💱' },
             { id: 'trade', label: '🚀 Trade', icon: '🚀' },
@@ -3179,21 +2125,7 @@ const LiveCurrencySimulator = () => {
             <button
               key={id}
               onClick={() => setActiveTab(id)}
-              style={{
-                padding: '12px 24px',
-                background: activeTab === id ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)',
-                border: 'none',
-                borderRadius: '8px',
-                color: 'white',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '600',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                transition: 'all 0.2s ease'
-              }}
-              className="tab-button"
+              className={`tab-button ${activeTab === id ? 'active' : ''}`}
             >
               {icon} {label}
             </button>
@@ -3201,32 +2133,16 @@ const LiveCurrencySimulator = () => {
         </div>
         
         {/* Time Frame Selector */}
-        <div style={{ marginTop: '15px' }}>
-          <label style={{ 
-            fontSize: '12px', 
-            opacity: 0.8,
-            marginRight: '10px'
-          }}>
+        <div className="timeframe-selector">
+          <label className="timeframe-label">
             Time Frame:
           </label>
-          <div style={{ display: 'flex', gap: '5px' }}>
+          <div className="timeframe-buttons">
             {TIME_FRAMES.map(tf => (
               <button
                 key={tf.label}
                 onClick={() => setSelectedTimeFrame(tf)}
-                style={{
-                  padding: '4px 12px',
-                  background: selectedTimeFrame.label === tf.label 
-                    ? 'rgba(255,255,255,0.3)' 
-                    : 'rgba(255,255,255,0.1)',
-                  border: 'none',
-                  borderRadius: '20px',
-                  color: 'white',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  transition: 'all 0.2s ease'
-                }}
-                className="timeframe-button"
+                className={`timeframe-button ${selectedTimeFrame.label === tf.label ? 'active' : ''}`}
               >
                 {tf.label}
               </button>
@@ -3245,275 +2161,172 @@ const LiveCurrencySimulator = () => {
       )}
       
       {/* Main Content */}
-      {activeTab === 'converter' && (
-        <CurrencyConverter
-          currencies={currencies}
-          darkMode={darkMode}
-        />
-      )}
-      
-      {activeTab === 'trade' && (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(400px, 1fr) minmax(500px, 2fr)',
-          gap: '20px',
-          marginBottom: '20px'
-        }}>
-          {/* Trading Panel */}
-          <AdvancedTradePanel
-            portfolio={portfolio}
+      <div className="main-content">
+        {activeTab === 'converter' && (
+          <CurrencyConverter
             currencies={currencies}
-            onExecuteTrade={handleExecuteTrade}
             darkMode={darkMode}
-            pair={selectedPair}
-            onPairChange={setSelectedPair}
           />
-          
-          {/* Chart Section */}
-          <div style={{
-            display: 'grid',
-            gridTemplateRows: 'auto 1fr',
-            gap: '20px'
-          }}>
-            <Card darkMode={darkMode}>
-              <h2 style={{ 
-                marginTop: 0, 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '10px', 
-                color: '#667eea',
-                fontSize: '20px',
-                fontWeight: '600'
-              }}>
-                📈 {selectedPair} - Live Chart
-              </h2>
-              <div style={{ 
-                width: '100%', 
-                height: '300px',
-                background: darkMode ? '#0f172a' : '#f8fafc',
-                borderRadius: '8px',
-                border: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: darkMode ? '#94a3b8' : '#64748b',
-                position: 'relative',
-                overflow: 'hidden'
-              }}>
-                {/* Simplified chart simulation */}
-                <svg width="100%" height="100%" style={{ position: 'absolute', top: 0, left: 0 }}>
-                  {/* Grid lines */}
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <line
-                      key={`h${i}`}
-                      x1="0"
-                      y1={(i + 1) * 60}
-                      x2="100%"
-                      y2={(i + 1) * 60}
-                      stroke={darkMode ? '#334155' : '#e2e8f0'}
-                      strokeWidth="1"
+        )}
+        
+        {activeTab === 'trade' && (
+          <div className="trade-panel-grid">
+            {/* Trading Panel */}
+            <AdvancedTradePanel
+              portfolio={portfolio}
+              currencies={currencies}
+              onExecuteTrade={handleExecuteTrade}
+              darkMode={darkMode}
+              pair={selectedPair}
+              onPairChange={setSelectedPair}
+            />
+            
+            {/* Chart Section */}
+            <div className="chart-section">
+              <Card darkMode={darkMode} className="chart-card">
+                <h2 className="section-title">
+                  📈 {selectedPair} - Live Chart
+                </h2>
+                <div className="chart-container">
+                  <svg width="100%" height="100%" className="chart-svg">
+                    {/* Grid lines */}
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <line
+                        key={`h${i}`}
+                        x1="0"
+                        y1={(i + 1) * 60}
+                        x2="100%"
+                        y2={(i + 1) * 60}
+                        className="chart-grid-line"
+                      />
+                    ))}
+                    
+                    {/* Price line */}
+                    <path
+                      d={(() => {
+                        const points = Array.from({ length: 50 }, (_, i) => {
+                          const x = (i / 49) * 100;
+                          const y = 50 + Math.sin(i * 0.5) * 40 + Math.random() * 20;
+                          return `${i === 0 ? 'M' : 'L'} ${x}% ${y}`;
+                        }).join(' ');
+                        return points;
+                      })()}
+                      className="chart-line"
                     />
-                  ))}
+                  </svg>
                   
-                  {/* Price line */}
-                  <path
-                    d={(() => {
-                      const points = Array.from({ length: 50 }, (_, i) => {
-                        const x = (i / 49) * 100;
-                        const y = 50 + Math.sin(i * 0.5) * 40 + Math.random() * 20;
-                        return `${i === 0 ? 'M' : 'L'} ${x}% ${y}`;
-                      }).join(' ');
-                      return points;
-                    })()}
-                    fill="none"
-                    stroke="#667eea"
-                    strokeWidth="2"
-                  />
-                </svg>
+                  <div className="chart-info">
+                    <div className="current-price">
+                      Current: {currentPairRate.toFixed(5)}
+                    </div>
+                    <div className="chart-update-time">
+                      Last update: {lastUpdate.toLocaleTimeString()}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+              
+              <OrderBook
+                pair={selectedPair}
+                currencies={currencies}
+                darkMode={darkMode}
+              />
+            </div>
+          </div>
+        )}
+        
+        {activeTab === 'portfolio' && (
+          <div className="portfolio-grid">
+            <PortfolioDashboard
+              portfolio={portfolio}
+              trades={trades}
+              darkMode={darkMode}
+            />
+            
+            {/* Risk Management Dashboard */}
+            <Card darkMode={darkMode} className="risk-dashboard-card">
+              <h2 className="section-title">
+                🛡️ Risk Management
+              </h2>
+              
+              {/* Risk Metrics */}
+              <div className="risk-metrics-grid">
+                <div className="risk-metric-card" style={{ borderColor: '#10b981' }}>
+                  <div className="risk-metric-label">Max Drawdown</div>
+                  <div className="risk-metric-value" style={{ color: '#10b981' }}>
+                    2.5%
+                  </div>
+                </div>
                 
-                <div style={{ 
-                  position: 'absolute', 
-                  bottom: '10px', 
-                  left: '10px',
-                  background: darkMode ? 'rgba(15, 23, 42, 0.8)' : 'rgba(255, 255, 255, 0.8)',
-                  padding: '8px 12px',
-                  borderRadius: '6px',
-                  fontSize: '12px'
-                }}>
-                  <div style={{ fontWeight: '600', color: '#667eea' }}>
-                    Current: {currentPairRate.toFixed(5)}
+                <div className="risk-metric-card" style={{ borderColor: '#f59e0b' }}>
+                  <div className="risk-metric-label">Sharpe Ratio</div>
+                  <div className="risk-metric-value" style={{ color: '#f59e0b' }}>
+                    1.8
                   </div>
-                  <div style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>
-                    Last update: {lastUpdate.toLocaleTimeString()}
+                </div>
+                
+                <div className="risk-metric-card" style={{ borderColor: '#3b82f6' }}>
+                  <div className="risk-metric-label">Volatility</div>
+                  <div className="risk-metric-value" style={{ color: '#3b82f6' }}>
+                    15%
                   </div>
+                </div>
+                
+                <div className="risk-metric-card" style={{ borderColor: '#8b5cf6' }}>
+                  <div className="risk-metric-label">Value at Risk</div>
+                  <div className="risk-metric-value" style={{ color: '#8b5cf6' }}>
+                    $250
+                  </div>
+                </div>
+              </div>
+              
+              {/* Risk Controls */}
+              <div className="risk-controls-section">
+                <h3 className="section-subtitle">
+                  ⚙️ Risk Controls
+                </h3>
+                <div className="risk-controls-list">
+                  {RISK_LEVELS.map(level => (
+                    <div 
+                      key={level.id}
+                      className="risk-control-item"
+                    >
+                      <div>
+                        <div className="risk-control-name" style={{ color: level.color }}>{level.name}</div>
+                        <div className="risk-control-details">
+                          Max Position: {(level.maxPositionSize * 100).toFixed(1)}% • Max Loss: {(level.maxLossPerTrade * 100).toFixed(1)}%
+                        </div>
+                      </div>
+                      <div 
+                        className="risk-control-indicator"
+                        style={{ backgroundColor: level.color }}
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
             </Card>
-            
-            <OrderBook
-              pair={selectedPair}
-              currencies={currencies}
-              darkMode={darkMode}
-            />
           </div>
-        </div>
-      )}
-      
-      {activeTab === 'portfolio' && (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-          gap: '20px',
-          marginBottom: '20px'
-        }}>
-          <PortfolioDashboard
-            portfolio={portfolio}
+        )}
+        
+        {activeTab === 'history' && (
+          <AdvancedTradeHistory
             trades={trades}
+            onCloseTrade={handleCloseTrade}
+            onCancelOrder={handleCancelOrder}
             darkMode={darkMode}
           />
-          
-          {/* Risk Management Dashboard */}
-          <Card darkMode={darkMode}>
-            <h2 style={{ 
-              marginTop: 0, 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '10px', 
-              color: '#667eea',
-              fontSize: '20px',
-              fontWeight: '600'
-            }}>
-              🛡️ Risk Management
-            </h2>
-            
-            {/* Risk Metrics */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: '15px',
-              marginBottom: '20px'
-            }}>
-              <div style={{
-                padding: '15px',
-                background: darkMode ? '#0f172a' : '#f8fafc',
-                borderRadius: '8px',
-                textAlign: 'center',
-                border: '1px solid #10b981'
-              }}>
-                <div style={{ fontSize: '12px', color: darkMode ? '#94a3b8' : '#64748b' }}>Max Drawdown</div>
-                <div style={{ fontSize: '24px', fontWeight: '700', color: '#10b981' }}>
-                  2.5%
-                </div>
-              </div>
-              
-              <div style={{
-                padding: '15px',
-                background: darkMode ? '#0f172a' : '#f8fafc',
-                borderRadius: '8px',
-                textAlign: 'center',
-                border: '1px solid #f59e0b'
-              }}>
-                <div style={{ fontSize: '12px', color: darkMode ? '#94a3b8' : '#64748b' }}>Sharpe Ratio</div>
-                <div style={{ fontSize: '24px', fontWeight: '700', color: '#f59e0b' }}>
-                  1.8
-                </div>
-              </div>
-              
-              <div style={{
-                padding: '15px',
-                background: darkMode ? '#0f172a' : '#f8fafc',
-                borderRadius: '8px',
-                textAlign: 'center',
-                border: '1px solid #3b82f6'
-              }}>
-                <div style={{ fontSize: '12px', color: darkMode ? '#94a3b8' : '#64748b' }}>Volatility</div>
-                <div style={{ fontSize: '24px', fontWeight: '700', color: '#3b82f6' }}>
-                  15%
-                </div>
-              </div>
-              
-              <div style={{
-                padding: '15px',
-                background: darkMode ? '#0f172a' : '#f8fafc',
-                borderRadius: '8px',
-                textAlign: 'center',
-                border: '1px solid #8b5cf6'
-              }}>
-                <div style={{ fontSize: '12px', color: darkMode ? '#94a3b8' : '#64748b' }}>Value at Risk</div>
-                <div style={{ fontSize: '24px', fontWeight: '700', color: '#8b5cf6' }}>
-                  $250
-                </div>
-              </div>
-            </div>
-            
-            {/* Risk Controls */}
-            <div style={{ marginBottom: '20px' }}>
-              <h3 style={{ 
-                color: darkMode ? '#cbd5e1' : '#475569', 
-                fontSize: '16px', 
-                marginBottom: '15px',
-                fontWeight: '600'
-              }}>
-                ⚙️ Risk Controls
-              </h3>
-              <div style={{
-                background: darkMode ? '#0f172a' : '#f8fafc',
-                padding: '15px',
-                borderRadius: '8px'
-              }}>
-                {RISK_LEVELS.map(level => (
-                  <div 
-                    key={level.id}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      padding: '10px',
-                      background: darkMode ? '#1e293b' : '#f1f5f9',
-                      borderRadius: '6px',
-                      marginBottom: '8px',
-                      transition: 'transform 0.2s ease'
-                    }}
-                    className="risk-control-item"
-                  >
-                    <div>
-                      <div style={{ fontWeight: '600', color: level.color }}>{level.name}</div>
-                      <div style={{ fontSize: '12px', color: darkMode ? '#94a3b8' : '#64748b' }}>
-                        Max Position: {(level.maxPositionSize * 100).toFixed(1)}% • Max Loss: {(level.maxLossPerTrade * 100).toFixed(1)}%
-                      </div>
-                    </div>
-                    <div style={{
-                      width: '20px',
-                      height: '20px',
-                      borderRadius: '50%',
-                      background: level.color,
-                      border: `2px solid ${darkMode ? '#0f172a' : 'white'}`
-                    }} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Card>
-        </div>
-      )}
-      
-      {activeTab === 'history' && (
-        <AdvancedTradeHistory
-          trades={trades}
-          onCloseTrade={handleCloseTrade}
-          onCancelOrder={handleCancelOrder}
-          darkMode={darkMode}
-        />
-      )}
-      
-      {activeTab === 'orders' && (
-        <OrderBook
-          pair={selectedPair}
-          currencies={currencies}
-          darkMode={darkMode}
-        />
-      )}
-      
+        )}
+        
+        {activeTab === 'orders' && (
+          <OrderBook
+            pair={selectedPair}
+            currencies={currencies}
+            darkMode={darkMode}
+          />
+        )}
+      </div>
+
       <GlobalStyles />
     </div>
   );
@@ -3556,11 +2369,14 @@ const GlobalStyles = () => (
         
         * {
           box-sizing: border-box;
+          margin: 0;
+          padding: 0;
         }
         
         body {
           margin: 0;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          overflow-x: hidden;
         }
         
         input[type="number"]::-webkit-inner-spin-button,
@@ -3586,6 +2402,1732 @@ const GlobalStyles = () => (
           font-family: inherit;
         }
         
+        /* Base Styles */
+        .app-container {
+          background-color: var(--bg-color);
+          color: var(--text-color);
+          min-height: 100vh;
+          padding: 20px;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+          transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .app-container.dark {
+          --bg-color: #0f172a;
+          --text-color: #ffffff;
+          --card-bg: #1e293b;
+          --card-border: #334155;
+          --input-bg: #0f172a;
+          --input-border: #334155;
+          --hover-bg: #334155;
+        }
+        
+        .app-container.light {
+          --bg-color: #f8fafc;
+          --text-color: #1e293b;
+          --card-bg: white;
+          --card-border: #e2e8f0;
+          --input-bg: #f8fafc;
+          --input-border: #e2e8f0;
+          --hover-bg: #f1f5f9;
+        }
+        
+        /* Header Styles */
+        .app-header {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          padding: 20px;
+          border-radius: 12px;
+          margin-bottom: 20px;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          flex-wrap: wrap;
+          gap: 15px;
+        }
+        
+        .app-title {
+          margin: 0;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 24px;
+          font-weight: 700;
+        }
+        
+        .app-subtitle {
+          margin: 5px 0 0 0;
+          opacity: 0.9;
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 5px;
+        }
+        
+        .subtitle-separator {
+          opacity: 0.6;
+        }
+        
+        .header-actions {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+        
+        /* Button Styles */
+        .header-button {
+          background: rgba(255,255,255,0.2);
+          border: 1px solid rgba(255,255,255,0.3);
+          border-radius: 8px;
+          padding: 8px 16px;
+          cursor: pointer;
+          color: white;
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transition: all 0.2s ease;
+        }
+        
+        .header-button:hover {
+          background: rgba(255,255,255,0.3);
+          transform: scale(1.05);
+        }
+        
+        .theme-toggle {
+          width: 40px;
+          height: 40px;
+          padding: 0;
+          justify-content: center;
+        }
+        
+        .reset-button {
+          background: rgba(239, 68, 68, 0.2);
+          border-color: rgba(239, 68, 68, 0.3);
+        }
+        
+        .export-button {
+          background: rgba(16, 185, 129, 0.2);
+          border-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        /* Tabs */
+        .tabs-container {
+          display: flex;
+          gap: 10px;
+          margin-top: 20px;
+          flex-wrap: wrap;
+        }
+        
+        .tab-button {
+          padding: 12px 24px;
+          background: rgba(255,255,255,0.1);
+          border: none;
+          border-radius: 8px;
+          color: white;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transition: all 0.2s ease;
+          white-space: nowrap;
+        }
+        
+        .tab-button:hover {
+          background: rgba(255,255,255,0.2);
+          transform: translateY(-2px);
+        }
+        
+        .tab-button.active {
+          background: rgba(255,255,255,0.3);
+        }
+        
+        /* Time Frame Selector */
+        .timeframe-selector {
+          margin-top: 15px;
+        }
+        
+        .timeframe-label {
+          font-size: 12px;
+          opacity: 0.8;
+          margin-right: 10px;
+        }
+        
+        .timeframe-buttons {
+          display: flex;
+          gap: 5px;
+          margin-top: 8px;
+          flex-wrap: wrap;
+        }
+        
+        .timeframe-button {
+          padding: 4px 12px;
+          background: rgba(255,255,255,0.1);
+          border: none;
+          border-radius: 20px;
+          color: white;
+          cursor: pointer;
+          font-size: 12px;
+          transition: all 0.2s ease;
+        }
+        
+        .timeframe-button:hover {
+          background: rgba(255,255,255,0.2);
+        }
+        
+        .timeframe-button.active {
+          background: rgba(255,255,255,0.3);
+        }
+        
+        /* Main Content */
+        .main-content {
+          max-width: 100%;
+          overflow-x: hidden;
+        }
+        
+        /* Converter Styles */
+        .converter-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+        
+        .converter-main {
+          grid-column: 1 / -1;
+        }
+        
+        .converter-sidebar {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+        
+        .converter-input-section {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 20px;
+          align-items: center;
+          margin-bottom: 30px;
+        }
+        
+        .swap-section {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+        }
+        
+        .swap-button {
+          padding: 16px;
+          background: var(--hover-bg);
+          border: none;
+          border-radius: 50%;
+          color: #667eea;
+          cursor: pointer;
+          font-size: 24px;
+          transition: all 0.3s ease;
+          width: 60px;
+          height: 60px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .swap-button:hover {
+          transform: rotate(180deg);
+          background: #667eea;
+          color: white;
+        }
+        
+        /* Input Styles */
+        .input-label {
+          display: block;
+          margin-bottom: 8px;
+          color: var(--text-color);
+          opacity: 0.8;
+          font-size: 14px;
+          font-weight: 500;
+        }
+        
+        .currency-select-row {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 10px;
+        }
+        
+        .select-wrapper {
+          flex: 1;
+          position: relative;
+        }
+        
+        .currency-select {
+          width: 100%;
+          padding: 12px 40px 12px 16px;
+          border-radius: 8px;
+          border: 1px solid var(--input-border);
+          background: var(--input-bg);
+          color: var(--text-color);
+          font-size: 16px;
+          font-weight: 600;
+        }
+        
+        .select-arrow {
+          position: absolute;
+          right: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          opacity: 0.6;
+        }
+        
+        .favorite-button {
+          padding: 12px;
+          background: var(--hover-bg);
+          border: none;
+          border-radius: 8px;
+          color: inherit;
+          cursor: pointer;
+          font-size: 20px;
+          transition: all 0.2s ease;
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .favorite-button.active {
+          color: #fbbf24;
+        }
+        
+        .favorite-button:hover {
+          transform: scale(1.1);
+        }
+        
+        .amount-input-wrapper {
+          position: relative;
+        }
+        
+        .amount-input {
+          width: 100%;
+          padding: 16px 20px;
+          padding-left: 60px;
+          border-radius: 8px;
+          border: 1px solid var(--input-border);
+          background: var(--input-bg);
+          color: var(--text-color);
+          font-size: 24px;
+          font-weight: 700;
+          transition: all 0.2s ease;
+        }
+        
+        .currency-code {
+          position: absolute;
+          left: 20px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #667eea;
+          font-weight: 600;
+          font-size: 16px;
+        }
+        
+        .converted-amount-display {
+          position: relative;
+          background: var(--input-bg);
+          border: 1px solid var(--input-border);
+          border-radius: 8px;
+          padding: 16px 20px;
+          padding-left: 60px;
+          font-size: 24px;
+          font-weight: 700;
+          color: #10b981;
+          min-height: 64px;
+          display: flex;
+          align-items: center;
+        }
+        
+        /* Quick Amounts */
+        .quick-amounts-grid {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          margin-top: 10px;
+        }
+        
+        .quick-amount-button {
+          padding: 10px 20px;
+          background: var(--hover-bg);
+          border: 1px solid var(--input-border);
+          border-radius: 20px;
+          color: var(--text-color);
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 600;
+          transition: all 0.2s ease;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        
+        .quick-amount-button.active {
+          background: #667eea;
+          border-color: #667eea;
+          color: white;
+        }
+        
+        .quick-amount-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
+        }
+        
+        /* Rate Details */
+        .rate-details {
+          background: var(--input-bg);
+          padding: 20px;
+          border-radius: 8px;
+          border: 1px solid var(--input-border);
+          margin-bottom: 20px;
+        }
+        
+        .rate-details-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 15px;
+          margin-top: 10px;
+        }
+        
+        .rate-label {
+          color: var(--text-color);
+          opacity: 0.7;
+          margin-bottom: 4px;
+          font-size: 14px;
+        }
+        
+        .rate-value {
+          font-size: 20px;
+          font-weight: 700;
+          color: #667eea;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        
+        .rate-value.inverse {
+          color: #10b981;
+        }
+        
+        /* Favorites Grid */
+        .favorites-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+          gap: 10px;
+        }
+        
+        .currency-button {
+          padding: 12px;
+          background: var(--hover-bg);
+          border: 1px solid var(--input-border);
+          border-radius: 8px;
+          color: var(--text-color);
+          cursor: pointer;
+          font-size: 14px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 6px;
+          transition: all 0.2s ease;
+        }
+        
+        .currency-button.active {
+          background: #667eea;
+          border-color: #667eea;
+          color: white;
+        }
+        
+        .currency-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .currency-flag {
+          font-size: 20px;
+        }
+        
+        .currency-code-text {
+          font-weight: 600;
+          font-size: 16px;
+        }
+        
+        .currency-rate {
+          font-size: 11px;
+          opacity: 0.7;
+        }
+        
+        /* Quick Conversions */
+        .quick-conversions-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 10px;
+        }
+        
+        .quick-conversion-button {
+          padding: 12px;
+          background: var(--hover-bg);
+          border: 1px solid var(--input-border);
+          border-radius: 8px;
+          color: var(--text-color);
+          cursor: pointer;
+          font-size: 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          transition: all 0.2s ease;
+          text-align: left;
+        }
+        
+        .quick-conversion-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(102, 126, 234, 0.1);
+        }
+        
+        .conversion-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 4px;
+        }
+        
+        .conversion-pair {
+          font-size: 16px;
+          font-weight: 600;
+        }
+        
+        .conversion-rate {
+          font-size: 12px;
+          color: #10b981;
+          font-weight: 600;
+        }
+        
+        .conversion-details {
+          display: flex;
+          justify-content: space-between;
+          font-size: 11px;
+          opacity: 0.7;
+        }
+        
+        /* History Table */
+        .history-table-container {
+          max-height: 300px;
+          overflow-y: auto;
+        }
+        
+        .history-table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        
+        .table-header {
+          padding: 8px;
+          text-align: left;
+          color: var(--text-color);
+          opacity: 0.7;
+          font-size: 11px;
+          font-weight: 600;
+          background: var(--card-bg);
+          position: sticky;
+          top: 0;
+          z-index: 10;
+        }
+        
+        .history-row {
+          border-bottom: 1px solid var(--input-border);
+          transition: background-color 0.2s;
+        }
+        
+        .history-row:hover {
+          background-color: rgba(102, 126, 234, 0.1);
+        }
+        
+        .history-time {
+          padding: 8px;
+          font-size: 11px;
+          opacity: 0.7;
+          white-space: nowrap;
+        }
+        
+        .history-currency {
+          padding: 8px;
+          font-size: 12px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+        
+        .history-amount {
+          padding: 8px;
+          font-size: 12px;
+        }
+        
+        .history-result {
+          padding: 8px;
+          font-size: 12px;
+          color: #10b981;
+          font-weight: 600;
+        }
+        
+        /* Empty States */
+        .empty-state {
+          text-align: center;
+          padding: 40px 20px;
+          opacity: 0.5;
+        }
+        
+        .empty-icon {
+          font-size: 48px;
+          margin-bottom: 20px;
+        }
+        
+        .empty-title {
+          font-size: 18px;
+          margin-bottom: 10px;
+          font-weight: 500;
+        }
+        
+        .empty-subtitle {
+          font-size: 12px;
+        }
+        
+        /* Clear History Button */
+        .clear-history-button {
+          width: 100%;
+          padding: 10px;
+          background: rgba(239, 68, 68, 0.1);
+          border: 1px solid rgba(239, 68, 68, 0.3);
+          border-radius: 8px;
+          color: #ef4444;
+          cursor: pointer;
+          font-size: 12px;
+          font-weight: 600;
+          margin-top: 15px;
+          transition: all 0.2s ease;
+        }
+        
+        .clear-history-button:hover {
+          background: rgba(239, 68, 68, 0.2);
+          transform: translateY(-1px);
+        }
+        
+        /* Trade Panel */
+        .trade-panel-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 20px;
+          margin-bottom: 20px;
+        }
+        
+        .chart-section {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+        
+        .trade-panel-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+        
+        .section-title {
+          margin: 0;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: #667eea;
+          font-size: 20px;
+          font-weight: 600;
+        }
+        
+        .section-subtitle {
+          margin: 0 0 15px 0;
+          color: #667eea;
+          font-size: 16px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        
+        .trade-panel-actions {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        
+        .balance-display {
+          font-size: 12px;
+          opacity: 0.7;
+        }
+        
+        .toggle-button {
+          padding: 6px 12px;
+          background: var(--hover-bg);
+          border: none;
+          border-radius: 6px;
+          color: var(--text-color);
+          cursor: pointer;
+          font-size: 12px;
+          transition: all 0.2s ease;
+        }
+        
+        .toggle-button:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Pair Selector */
+        .pair-selector {
+          margin-bottom: 20px;
+        }
+        
+        .pairs-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+          gap: 10px;
+        }
+        
+        .pair-button {
+          padding: 12px;
+          background: var(--hover-bg);
+          border: 1px solid var(--input-border);
+          border-radius: 8px;
+          color: var(--text-color);
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 0.2s ease;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+        }
+        
+        .pair-button.active {
+          background: #667eea;
+          border-color: #667eea;
+          color: white;
+        }
+        
+        .pair-button:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(102, 126, 234, 0.1);
+        }
+        
+        .pair-name {
+          font-size: 16px;
+          font-weight: 600;
+        }
+        
+        .pair-spread {
+          font-size: 12px;
+          opacity: 0.8;
+        }
+        
+        /* Current Rate Display */
+        .current-rate-display {
+          margin-bottom: 20px;
+          padding: 15px;
+          background: var(--input-bg);
+          border-radius: 8px;
+          border: 1px solid var(--input-border);
+        }
+        
+        .rate-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 8px;
+        }
+        
+        .rate-label {
+          color: var(--text-color);
+          opacity: 0.8;
+          font-size: 14px;
+        }
+        
+        .rate-value-large {
+          font-size: 24px;
+          font-weight: 700;
+          color: #667eea;
+        }
+        
+        .rate-details {
+          display: flex;
+          justify-content: space-between;
+          font-size: 12px;
+          opacity: 0.7;
+        }
+        
+        /* Direction Buttons */
+        .direction-buttons {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+        }
+        
+        .direction-button {
+          padding: 12px;
+          background: var(--hover-bg);
+          border: none;
+          border-radius: 8px;
+          color: var(--text-color);
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 600;
+          transition: all 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+        }
+        
+        .direction-button.active.buy {
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          color: white;
+        }
+        
+        .direction-button.active.sell {
+          background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+          color: white;
+        }
+        
+        .direction-button:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        /* Order Type Grid */
+        .order-type-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+          gap: 8px;
+        }
+        
+        .order-type-button {
+          padding: 12px;
+          background: var(--hover-bg);
+          border: 1px solid var(--input-border);
+          border-radius: 8px;
+          color: var(--text-color);
+          cursor: pointer;
+          font-size: 12px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 6px;
+          transition: all 0.2s ease;
+        }
+        
+        .order-type-button.active {
+          background: #667eea;
+          border-color: #667eea;
+          color: white;
+        }
+        
+        .order-type-button:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(102, 126, 234, 0.1);
+        }
+        
+        .order-icon {
+          font-size: 18px;
+        }
+        
+        .order-info {
+          text-align: center;
+        }
+        
+        .order-name {
+          font-weight: 600;
+          margin-bottom: 2px;
+        }
+        
+        .order-fee {
+          font-size: 11px;
+          opacity: 0.8;
+        }
+        
+        /* Amount Section */
+        .amount-section {
+          margin-bottom: 20px;
+        }
+        
+        .amount-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 8px;
+        }
+        
+        .available-amount {
+          font-size: 12px;
+          opacity: 0.7;
+        }
+        
+        .trade-amount-input {
+          width: 100%;
+          padding: 12px 16px;
+          padding-left: 40px;
+          border-radius: 8px;
+          border: 1px solid var(--input-border);
+          background: var(--input-bg);
+          color: var(--text-color);
+          font-size: 16px;
+          font-weight: 600;
+          transition: all 0.2s ease;
+        }
+        
+        .amount-currency {
+          position: absolute;
+          left: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #667eea;
+          font-weight: 600;
+        }
+        
+        .quick-trade-amount-buttons {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-top: 10px;
+        }
+        
+        .quick-trade-amount-button {
+          padding: 6px 12px;
+          background: var(--hover-bg);
+          border: 1px solid var(--input-border);
+          border-radius: 20px;
+          color: var(--text-color);
+          cursor: pointer;
+          font-size: 12px;
+          transition: all 0.2s ease;
+        }
+        
+        .quick-trade-amount-button.active {
+          background: #667eea;
+          border-color: #667eea;
+          color: white;
+        }
+        
+        .quick-trade-amount-button:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Advanced Settings */
+        .advanced-setting {
+          margin-bottom: 20px;
+        }
+        
+        .advanced-input {
+          width: 100%;
+          padding: 12px;
+          border-radius: 8px;
+          border: 1px solid var(--input-border);
+          background: var(--input-bg);
+          color: var(--text-color);
+          font-size: 16px;
+          transition: all 0.2s ease;
+        }
+        
+        .risk-management-section {
+          margin-bottom: 20px;
+        }
+        
+        .risk-inputs-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+          margin-bottom: 10px;
+        }
+        
+        .risk-label {
+          font-size: 12px;
+          opacity: 0.7;
+          margin-bottom: 4px;
+          display: block;
+          font-weight: 500;
+        }
+        
+        .risk-input {
+          width: 100%;
+          padding: 8px;
+          border-radius: 8px;
+          border: 1px solid var(--input-border);
+          background: var(--input-bg);
+          color: var(--text-color);
+          font-size: 14px;
+          transition: all 0.2s ease;
+        }
+        
+        .risk-level-section {
+          margin-top: 10px;
+        }
+        
+        .risk-level-buttons {
+          display: flex;
+          gap: 8px;
+        }
+        
+        .risk-level-button {
+          flex: 1;
+          padding: 8px;
+          background: var(--hover-bg);
+          border: 1px solid var(--input-border);
+          border-radius: 8px;
+          color: var(--text-color);
+          cursor: pointer;
+          font-size: 12px;
+          transition: all 0.2s ease;
+        }
+        
+        .risk-level-button.active {
+          color: white;
+          border-color: transparent;
+        }
+        
+        .risk-level-button:hover {
+          transform: translateY(-1px);
+        }
+        
+        .leverage-section {
+          margin-top: 10px;
+        }
+        
+        .trade-slider {
+          width: 100%;
+          height: 6px;
+          background: var(--hover-bg);
+          border-radius: 3px;
+          outline: none;
+          -webkit-appearance: none;
+        }
+        
+        .trade-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: #667eea;
+          cursor: pointer;
+        }
+        
+        .trade-slider::-moz-range-thumb {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: #667eea;
+          cursor: pointer;
+          border: none;
+        }
+        
+        /* Trade Summary */
+        .trade-summary {
+          background: var(--input-bg);
+          padding: 15px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+          border: 1px solid var(--input-border);
+        }
+        
+        .trade-summary.valid {
+          border-color: #10b981;
+        }
+        
+        .trade-summary.invalid {
+          border-color: #ef4444;
+        }
+        
+        .summary-title {
+          margin: 0 0 10px 0;
+          color: #667eea;
+          font-size: 14px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        
+        .valid-badge {
+          font-size: 10px;
+          background: #10b981;
+          color: white;
+          padding: 2px 8px;
+          border-radius: 10px;
+          font-weight: 500;
+        }
+        
+        .summary-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+          font-size: 12px;
+        }
+        
+        .summary-label {
+          color: var(--text-color);
+          opacity: 0.7;
+          margin-bottom: 2px;
+        }
+        
+        .summary-value {
+          font-weight: 600;
+        }
+        
+        .summary-value.primary {
+          color: #667eea;
+        }
+        
+        .summary-value.success {
+          color: #10b981;
+        }
+        
+        .summary-value.warning {
+          color: #f59e0b;
+        }
+        
+        .summary-value.error {
+          color: #ef4444;
+        }
+        
+        /* Error Messages */
+        .error-messages {
+          background: rgba(239, 68, 68, 0.1);
+          padding: 12px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+          border: 1px solid #ef4444;
+        }
+        
+        .error-title {
+          margin: 0 0 8px 0;
+          color: #ef4444;
+          font-size: 14px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        
+        .error-list {
+          margin: 0;
+          padding-left: 20px;
+          font-size: 12px;
+          color: #ef4444;
+          line-height: 1.5;
+        }
+        
+        /* Execute Button */
+        .execute-button {
+          width: 100%;
+          padding: 16px;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          transition: all 0.2s ease;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .execute-button.buy {
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        .execute-button.sell {
+          background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        .execute-button:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+        
+        .execute-button:not(:disabled):hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        
+        /* Chart Styles */
+        .chart-container {
+          width: 100%;
+          height: 300px;
+          background: var(--input-bg);
+          border-radius: 8px;
+          border: 1px solid var(--input-border);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-color);
+          opacity: 0.7;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .chart-svg {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+        
+        .chart-grid-line {
+          stroke: var(--input-border);
+          stroke-width: 1;
+        }
+        
+        .chart-line {
+          fill: none;
+          stroke: #667eea;
+          stroke-width: 2;
+        }
+        
+        .chart-info {
+          position: absolute;
+          bottom: 10px;
+          left: 10px;
+          background: rgba(15, 23, 42, 0.8);
+          padding: 8px 12px;
+          border-radius: 6px;
+          font-size: 12px;
+        }
+        
+        .current-price {
+          font-weight: 600;
+          color: #667eea;
+        }
+        
+        .chart-update-time {
+          opacity: 0.7;
+        }
+        
+        /* Order Book */
+        .order-book-card {
+          height: 100%;
+        }
+        
+        .order-book-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+        
+        .order-book-header {
+          color: #10b981;
+          font-size: 12px;
+          font-weight: 600;
+          margin-bottom: 10px;
+          display: flex;
+          justify-content: space-between;
+          padding: 0 8px;
+        }
+        
+        .ask-header {
+          color: #ef4444;
+        }
+        
+        .order-book-row {
+          position: relative;
+          display: flex;
+          justify-content: space-between;
+          padding: 8px;
+          border-radius: 4px;
+          margin-bottom: 4px;
+          font-size: 12px;
+          align-items: center;
+        }
+        
+        .bid-price {
+          color: #10b981;
+          font-weight: 500;
+        }
+        
+        .ask-price {
+          color: #ef4444;
+          font-weight: 500;
+        }
+        
+        .order-volume {
+          color: var(--text-color);
+          opacity: 0.8;
+        }
+        
+        /* Portfolio Dashboard */
+        .portfolio-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 20px;
+          margin-bottom: 20px;
+        }
+        
+        .metrics-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+          gap: 15px;
+          margin-bottom: 20px;
+        }
+        
+        .metric-card {
+          padding: 15px;
+          background: var(--input-bg);
+          border-radius: 8px;
+          text-align: center;
+          border: 1px solid var(--input-border);
+        }
+        
+        .metric-label {
+          font-size: 12px;
+          opacity: 0.7;
+          margin-bottom: 8px;
+        }
+        
+        .metric-value {
+          font-size: 24px;
+          font-weight: 700;
+        }
+        
+        .holdings-section {
+          margin-bottom: 20px;
+        }
+        
+        .holdings-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 10px;
+        }
+        
+        .holding-item {
+          padding: 12px;
+          background: var(--input-bg);
+          border-radius: 8px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          transition: transform 0.2s ease;
+        }
+        
+        .holding-item:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .holding-currency {
+          font-weight: 700;
+          font-size: 16px;
+          color: #667eea;
+        }
+        
+        .holding-name {
+          font-size: 12px;
+          opacity: 0.7;
+        }
+        
+        .holding-details {
+          text-align: right;
+        }
+        
+        .holding-amount {
+          font-weight: 700;
+          font-size: 14px;
+        }
+        
+        .holding-value {
+          font-size: 12px;
+          opacity: 0.7;
+        }
+        
+        .portfolio-stats {
+          display: flex;
+          justify-content: space-between;
+          padding-top: 15px;
+          border-top: 1px solid var(--input-border);
+          opacity: 0.7;
+          font-size: 12px;
+        }
+        
+        /* Risk Dashboard */
+        .risk-metrics-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 15px;
+          margin-bottom: 20px;
+        }
+        
+        .risk-metric-card {
+          padding: 15px;
+          background: var(--input-bg);
+          border-radius: 8px;
+          text-align: center;
+          border: 1px solid;
+        }
+        
+        .risk-controls-section {
+          margin-bottom: 20px;
+        }
+        
+        .risk-controls-list {
+          background: var(--input-bg);
+          padding: 15px;
+          border-radius: 8px;
+        }
+        
+        .risk-control-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px;
+          background: var(--card-bg);
+          border-radius: 6px;
+          margin-bottom: 8px;
+          transition: transform 0.2s ease;
+        }
+        
+        .risk-control-item:hover {
+          transform: translateX(5px);
+        }
+        
+        .risk-control-name {
+          font-weight: 600;
+          margin-bottom: 2px;
+        }
+        
+        .risk-control-details {
+          font-size: 12px;
+          opacity: 0.7;
+        }
+        
+        .risk-control-indicator {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          border: 2px solid var(--card-bg);
+        }
+        
+        /* Trade History */
+        .trade-history-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+        
+        .trade-history-controls {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+        
+        .trade-search {
+          padding: 8px 12px;
+          border-radius: 8px;
+          border: 1px solid var(--input-border);
+          background: var(--input-bg);
+          color: var(--text-color);
+          font-size: 12px;
+          min-width: 200px;
+        }
+        
+        .trade-filter {
+          padding: 8px 12px;
+          border-radius: 8px;
+          border: 1px solid var(--input-border);
+          background: var(--input-bg);
+          color: var(--text-color);
+          font-size: 12px;
+        }
+        
+        .trade-history-table-container {
+          max-height: 500px;
+          overflow-y: auto;
+        }
+        
+        .trade-history-table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        
+        .trade-row.open {
+          background-color: rgba(59, 130, 246, 0.1);
+        }
+        
+        .trade-row.profit {
+          background-color: rgba(16, 185, 129, 0.1);
+        }
+        
+        .trade-row.loss {
+          background-color: rgba(239, 68, 68, 0.1);
+        }
+        
+        .trade-row:hover {
+          background-color: rgba(102, 126, 234, 0.1);
+        }
+        
+        .trade-time {
+          padding: 12px;
+          font-size: 12px;
+          opacity: 0.8;
+          white-space: nowrap;
+        }
+        
+        .trade-date {
+          font-size: 11px;
+          opacity: 0.6;
+        }
+        
+        .trade-direction-indicator {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        
+        .direction-badge {
+          background: #10b981;
+          color: white;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 11px;
+          font-weight: 600;
+          min-width: 40px;
+          text-align: center;
+        }
+        
+        .direction-badge.sell {
+          background: #ef4444;
+        }
+        
+        .pair-name {
+          font-size: 12px;
+          font-weight: 600;
+        }
+        
+        .trade-type {
+          padding: 12px;
+          font-size: 12px;
+          opacity: 0.7;
+        }
+        
+        .trade-status {
+          padding: 12px;
+        }
+        
+        .status-badge {
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 11px;
+          font-weight: 600;
+          color: white;
+          display: inline-block;
+          min-width: 70px;
+          text-align: center;
+        }
+        
+        .status-badge.open {
+          background: #3b82f6;
+        }
+        
+        .status-badge.pending {
+          background: #f59e0b;
+        }
+        
+        .status-badge.profit {
+          background: #10b981;
+        }
+        
+        .status-badge.loss {
+          background: #ef4444;
+        }
+        
+        .trade-amount {
+          padding: 12px;
+          font-size: 12px;
+          font-weight: 600;
+        }
+        
+        .trade-price {
+          padding: 12px;
+          font-size: 12px;
+          opacity: 0.7;
+        }
+        
+        .trade-pnl {
+          padding: 12px;
+        }
+        
+        .pnl-value {
+          font-weight: 600;
+          font-size: 12px;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+        }
+        
+        .pnl-value.profit {
+          color: #10b981;
+        }
+        
+        .pnl-value.loss {
+          color: #ef4444;
+        }
+        
+        .pnl-neutral {
+          opacity: 0.7;
+          font-size: 12px;
+        }
+        
+        .trade-actions {
+          padding: 12px;
+        }
+        
+        .action-button {
+          padding: 6px 12px;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 11px;
+          font-weight: 600;
+          transition: all 0.2s ease;
+        }
+        
+        .action-button.close {
+          background: #ef4444;
+        }
+        
+        .action-button.cancel {
+          background: #f59e0b;
+        }
+        
+        .action-button:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .trade-history-summary {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 15px;
+          padding-top: 15px;
+          border-top: 1px solid var(--input-border);
+          opacity: 0.7;
+          font-size: 12px;
+        }
+        
+        .summary-pnl {
+          font-weight: 600;
+          margin-left: 5px;
+        }
+        
+        .summary-pnl.profit {
+          color: #10b981;
+        }
+        
+        .summary-pnl.loss {
+          color: #ef4444;
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-button {
+          display: none;
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          z-index: 1000;
+          background: #667eea;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          width: 50px;
+          height: 50px;
+          font-size: 24px;
+          cursor: pointer;
+          justify-content: center;
+          align-items: center;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .mobile-menu-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0,0,0,0.5);
+          z-index: 999;
+          backdrop-filter: blur(4px);
+        }
+        
+        .mobile-menu {
+          position: fixed;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          width: 280px;
+          background: var(--card-bg);
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          overflow-y: auto;
+          box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .mobile-tab-button {
+          padding: 15px;
+          background: var(--hover-bg);
+          border: none;
+          border-radius: 8px;
+          color: var(--text-color);
+          cursor: pointer;
+          font-size: 16px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          transition: all 0.2s ease;
+          text-align: left;
+        }
+        
+        .mobile-tab-button.active {
+          background: #667eea;
+          color: white;
+        }
+        
+        .mobile-tab-button:hover {
+          transform: translateX(-5px);
+        }
+        
+        /* Scrollbar */
         ::-webkit-scrollbar {
           width: 8px;
           height: 8px;
@@ -3605,155 +4147,220 @@ const GlobalStyles = () => (
           background: rgba(102, 126, 234, 0.8);
         }
         
-        /* Custom Classes for Hover Effects */
-        .notification-close-button:hover {
-          opacity: 1 !important;
-        }
-        
-        .header-button:hover {
-          background: rgba(255,255,255,0.3) !important;
-          transform: scale(1.1) !important;
-        }
-        
-        .tab-button:hover {
-          background: rgba(255,255,255,0.2) !important;
-          transform: translateY(-2px) !important;
-        }
-        
-        .timeframe-button:hover {
-          background: rgba(255,255,255,0.2) !important;
-        }
-        
-        .pair-button:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 8px rgba(102, 126, 234, 0.1);
-        }
-        
-        .currency-button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
-        .quick-conversion-button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 8px rgba(102, 126, 234, 0.1);
-        }
-        
-        .clear-history-button:hover {
-          background: rgba(239, 68, 68, 0.2) !important;
-          transform: translateY(-1px);
-        }
-        
-        .history-row:hover {
-          background-color: rgba(102, 126, 234, 0.1) !important;
-        }
-        
-        .direction-button:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        
-        .order-type-button:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 8px rgba(102, 126, 234, 0.1);
-        }
-        
-        .quick-amount-button:hover {
-          transform: translateY(-1px);
-          boxShadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .risk-level-button:hover {
-          transform: translateY(-1px);
-        }
-        
-        .trade-slider::-webkit-slider-thumb {
-          appearance: none;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: #667eea;
-          cursor: pointer;
-        }
-        
-        .trade-slider::-moz-range-thumb {
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: #667eea;
-          cursor: pointer;
-          border: none;
-        }
-        
-        .execute-button:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-        }
-        
-        .execute-button::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-          transform: translateX(-100%);
-          transition: transform 0.6s ease;
-        }
-        
-        .execute-button:hover::after:not(:disabled) {
-          transform: translateX(100%);
-        }
-        
-        .holding-item:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .risk-control-item:hover {
-          transform: translateX(5px);
-        }
-        
-        .trade-row:hover {
-          background-color: rgba(102, 126, 234, 0.1) !important;
-        }
-        
-        .action-button:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .toggle-button:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        @media (max-width: 768px) {
-          .responsive-grid {
-            grid-template-columns: 1fr !important;
+        /* Responsive Breakpoints */
+        @media (min-width: 640px) {
+          .rate-details-grid {
+            grid-template-columns: repeat(2, 1fr);
           }
           
-          .responsive-flex {
-            flex-direction: column;
+          .summary-grid {
+            grid-template-columns: repeat(4, 1fr);
+          }
+          
+          .order-book-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+        }
+        
+        @media (min-width: 768px) {
+          .converter-grid {
+            grid-template-columns: 2fr 1fr;
+          }
+          
+          .converter-input-section {
+            grid-template-columns: 1fr auto 1fr;
           }
           
           .trade-panel-grid {
-            grid-template-columns: 1fr !important;
+            grid-template-columns: 400px 1fr;
           }
           
+          .portfolio-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+        }
+        
+        @media (min-width: 1024px) {
           .converter-grid {
-            grid-template-columns: 1fr !important;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-areas: 
+              "main main sidebar"
+              "history history sidebar";
+          }
+          
+          .converter-main {
+            grid-area: main;
+          }
+          
+          .converter-sidebar {
+            grid-area: sidebar;
+          }
+          
+          .history-card {
+            grid-area: history;
+          }
+          
+          .trade-panel-grid {
+            grid-template-columns: minmax(400px, 1fr) minmax(500px, 2fr);
+          }
+        }
+        
+        @media (max-width: 768px) {
+          .app-title {
+            font-size: 20px;
+          }
+          
+          .app-subtitle {
+            font-size: 12px;
+          }
+          
+          .header-content {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+          
+          .header-actions {
+            width: 100%;
+            justify-content: flex-start;
+          }
+          
+          .tabs-container {
+            display: none;
+          }
+          
+          .mobile-menu-button {
+            display: flex;
+          }
+          
+          .mobile-menu-overlay {
+            display: block;
+          }
+          
+          .trade-history-header {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          
+          .trade-history-controls {
+            width: 100%;
+          }
+          
+          .trade-search {
+            min-width: 0;
+            flex: 1;
+          }
+          
+          .trade-filter {
+            flex: 1;
+          }
+        }
+        
+        @media (max-width: 640px) {
+          .app-container {
+            padding: 10px;
+          }
+          
+          .app-header {
+            padding: 15px;
+          }
+          
+          .section-title {
+            font-size: 18px;
+          }
+          
+          .amount-input {
+            font-size: 20px;
+          }
+          
+          .converted-amount-display {
+            font-size: 20px;
+          }
+          
+          .rate-value {
+            font-size: 18px;
+          }
+          
+          .rate-value-large {
+            font-size: 20px;
+          }
+          
+          .metric-value {
+            font-size: 20px;
+          }
+          
+          .risk-metrics-grid {
+            grid-template-columns: 1fr;
+          }
+          
+          .trade-history-table {
+            font-size: 11px;
+          }
+          
+          .trade-time, .trade-date, .trade-type, .trade-amount, .trade-price, .trade-pnl {
+            padding: 8px;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .converter-input-section {
+            gap: 15px;
+          }
+          
+          .swap-button {
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+          }
+          
+          .amount-input {
+            padding: 12px 20px;
+            padding-left: 50px;
+            font-size: 18px;
+          }
+          
+          .currency-code {
+            left: 15px;
+            font-size: 14px;
+          }
+          
+          .converted-amount-display {
+            padding: 12px 20px;
+            padding-left: 50px;
+            font-size: 18px;
+            min-height: 56px;
+          }
+          
+          .direction-buttons {
+            grid-template-columns: 1fr;
+          }
+          
+          .order-type-grid {
+            grid-template-columns: 1fr;
+          }
+          
+          .risk-inputs-grid {
+            grid-template-columns: 1fr;
+          }
+          
+          .risk-level-buttons {
+            flex-direction: column;
+          }
+          
+          .favorites-grid {
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+          }
+          
+          .quick-conversions-grid {
+            grid-template-columns: 1fr;
+          }
+          
+          .trade-history-controls {
+            flex-direction: column;
           }
         }
       `}
     </style>
-    <footer style={{
-      textAlign: 'center',
-      padding: '20px',
-      fontSize: '12px',
-      color: '#94a3b8'
-    }}>
+    <footer className="app-footer">
       © <span>{new Date().getFullYear()}</span> ASAP~PRICE. All rights reserved.
       <br/>
       <span>Powered By Royzeenet</span>

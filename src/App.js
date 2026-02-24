@@ -331,7 +331,7 @@ class TradingEngine {
 
   static validateTrade(portfolio, currencyPair, amount, price, direction, orderType, riskLevel) {
     const errors = [];
-    const [baseCurrency, quoteCurrency] = currencyPair.split('/');
+    const [baseCurrency] = currencyPair.split('/');
     const riskConfig = RISK_LEVELS.find(r => r.id === riskLevel);
     const tradingPair = TRADING_PAIRS.find(p => p.pair === currencyPair);
 
@@ -443,6 +443,7 @@ const useLiveCurrencyData = () => {
   return { currencies, loading, error, lastUpdate, rateHistory, apiSource, refresh: updateCurrencies };
 };
 
+// eslint-disable-next-line no-unused-vars
 const useMarketData = (currencies, setCurrencies, setRateHistory, setLastUpdate, timeFrame) => {
   useEffect(() => {
     const updateLiveRates = () => {
@@ -681,6 +682,7 @@ const EmptyState = ({ icon, title, subtitle, action }) => (
 );
 
 // UX Improvement: Skeleton Loader
+// eslint-disable-next-line no-unused-vars
 const SkeletonLoader = ({ type = 'text', width = '100%', height = '20px' }) => (
   <div className={`skeleton-loader ${type}`} style={{ width, height }}>
     <div className="skeleton-shimmer"></div>
@@ -703,16 +705,6 @@ const CurrencyConverter = ({ currencies, darkMode, liveData, onRefresh }) => {
   const [showRateChart, setShowRateChart] = useState(false);
   const [rateHistory, setRateHistory] = useState([]);
   const currencyService = useMemo(() => new LiveCurrencyService(), []);
-
-  useEffect(() => {
-    calculateConversion();
-  }, [fromCurrency, toCurrency, amount, currencies]);
-
-  useEffect(() => {
-    if (liveData?.rates) {
-      calculateConversion();
-    }
-  }, [liveData]);
 
   const calculateConversion = useCallback(async () => {
     if (!amount || amount <= 0) {
@@ -743,6 +735,16 @@ const CurrencyConverter = ({ currencies, darkMode, liveData, onRefresh }) => {
       setIsConverting(false);
     }
   }, [amount, fromCurrency, toCurrency, currencies, currencyService]);
+
+  useEffect(() => {
+    calculateConversion();
+  }, [fromCurrency, toCurrency, amount, currencies, calculateConversion]);
+
+  useEffect(() => {
+    if (liveData?.rates) {
+      calculateConversion();
+    }
+  }, [liveData, calculateConversion]);
 
   const handleSwapCurrencies = () => {
     setIsSwapping(true);
@@ -1295,6 +1297,7 @@ const AdvancedTradePanel = ({
     setIsCalculating(true);
 
     setTimeout(() => {
+      // eslint-disable-next-line no-unused-vars
       const [from, to] = pair.split('/');
       const entryPrice = tradeConfig.orderType === 'market' ? currentRate : tradeConfig.limitPrice;
       const spread = TRADING_PAIRS.find(p => p.pair === pair)?.spread || 0.0001;
@@ -1382,6 +1385,7 @@ const AdvancedTradePanel = ({
   const handleExecuteTrade = () => {
     if (errors.length > 0 || Object.keys(fieldErrors).length > 0 || isCalculating) return;
 
+    // eslint-disable-next-line no-unused-vars
     const [from] = pair.split('/');
     const tradeData = {
       id: Date.now(),
@@ -1859,8 +1863,8 @@ const PortfolioDashboard = ({ portfolio, trades, darkMode }) => {
 
 const AdvancedTradeHistory = ({ trades, onCloseTrade, onCancelOrder, darkMode }) => {
   const [filter, setFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('timestamp');
-  const [sortOrder, setSortOrder] = useState('desc');
+  const [sortBy] = useState('timestamp');
+  const [sortOrder] = useState('desc');
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredTrades = useMemo(() => {
@@ -2087,7 +2091,6 @@ const LiveCurrencySimulator = () => {
   });
 
   const [trades, setTrades] = useLocalStorage('forex-trades', []);
-  const [rateHistory, setRateHistory] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [darkMode, setDarkMode] = useState(() => {
@@ -2224,7 +2227,7 @@ const LiveCurrencySimulator = () => {
 
           setPortfolio(prevPortfolio => {
             const newPortfolio = { ...prevPortfolio };
-            const [fromCurrency, toCurrency] = trade.pair.split('/');
+            const [, toCurrency] = trade.pair.split('/');
 
             if (trade.direction === TRADE_DIRECTION.BUY) {
               newPortfolio.currencies[toCurrency] -= trade.amount;

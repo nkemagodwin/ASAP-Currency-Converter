@@ -2577,7 +2577,7 @@ const LiveCurrencySimulator = () => {
       </div>
 
       <footer className="app-footer">
-        © {new Date().getFullYear()} ASAP~FUNDS. All rights reserved.
+        © {new Date().getFullYear()} ASAP~FUNDS . All rights reserved.
         <br />
         <span>Powered By Royzeenet</span>
       </footer>

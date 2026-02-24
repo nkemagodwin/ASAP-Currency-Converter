@@ -53,37 +53,34 @@
 }
 
 /* =============== GLOBAL STYLES =============== */
-html, body, #root {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
 html {
   font-size: 16px;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;           /* prevent page scroll */
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden; /* Prevent body scrolling */
+  height: 100%;
+  width: 100%;
 }
 
 #root {
-  overflow: hidden; /* Keep scrolling contained */
+  height: 100%;
+  width: 100%;
+  overflow: hidden;           /* keep scrolling inside main content */
 }
 
 /* =============== APP CONTAINER =============== */
 .app-container {
-  height: 100vh; /* Use full viewport height */
-  width: 100vw; /* Use full viewport width */
-  max-width: 100%;
+  height: 100%;               /* fill root exactly */
+  width: 100%;
   transition: background-color var(--transition-base), color var(--transition-base);
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Contain all scrolling */
 }
 
 .app-container.light {
@@ -101,13 +98,12 @@ body {
   padding: var(--space-lg);
   background-color: var(--light-card);
   border-bottom: 1px solid var(--light-border);
-  position: sticky;
+  position: sticky;           /* stays at top while main content scrolls */
   top: 0;
   z-index: 40;
   backdrop-filter: blur(10px);
   background-color: rgba(255, 255, 255, 0.9);
-  flex-shrink: 0; /* Prevent header from shrinking */
-  width: 100%;
+  flex-shrink: 0;             /* prevents header from shrinking */
 }
 
 .dark .app-header {
@@ -116,14 +112,13 @@ body {
 }
 
 .header-content {
-  max-width: 1400px;
+  max-width: 1400px;          /* optional content width limit */
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-md);
-  width: 100%;
 }
 
 .app-title {
@@ -207,7 +202,6 @@ body {
   gap: var(--space-xs);
   flex-wrap: wrap;
   padding: 0 var(--space-lg);
-  width: 100%;
 }
 
 .tab-button {
@@ -262,7 +256,6 @@ body {
   gap: var(--space-md);
   flex-wrap: wrap;
   padding: 0 var(--space-lg);
-  width: 100%;
 }
 
 .timeframe-label {
@@ -314,43 +307,15 @@ body {
   border-color: var(--primary);
 }
 
-/* =============== MAIN CONTENT (Scrollable Area) =============== */
+/* =============== MAIN CONTENT (scrollable) =============== */
 .main-content {
-  flex: 1 1 auto; /* Takes remaining space */
-  overflow-y: auto; /* Enables vertical scrolling */
-  overflow-x: hidden; /* Prevents horizontal scroll */
+  flex: 1 1 auto;             /* takes remaining space */
+  overflow-y: auto;            /* enables scrolling */
+  max-width: 1400px;           /* optional content width limit */
   width: 100%;
-  max-width: 1400px;
   margin: 0 auto;
   padding: var(--space-lg);
   animation: fadeIn var(--transition-slow);
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-}
-
-/* Scrollbar styling for main content */
-.main-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.main-content::-webkit-scrollbar-track {
-  background: var(--light-bg);
-}
-
-.dark .main-content::-webkit-scrollbar-track {
-  background: var(--dark-bg);
-}
-
-.main-content::-webkit-scrollbar-thumb {
-  background: var(--light-border);
-  border-radius: var(--radius-sm);
-}
-
-.dark .main-content::-webkit-scrollbar-thumb {
-  background: var(--dark-border);
-}
-
-.main-content::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
 }
 
 /* =============== CARDS =============== */
@@ -2886,14 +2851,13 @@ body {
 
 /* =============== FOOTER =============== */
 .app-footer {
+  flex-shrink: 0;              /* keeps footer at bottom */
   text-align: center;
   padding: var(--space-lg);
   font-size: 0.875rem;
   color: var(--light-text-secondary);
   border-top: 1px solid var(--light-border);
   margin-top: var(--space-xl);
-  flex-shrink: 0; /* Prevent footer from shrinking */
-  width: 100%;
 }
 
 .dark .app-footer {

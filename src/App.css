@@ -1,46 +1,51 @@
-/* App.css */
+/* =============== LiveCurrencySimulator.css =============== */
+/* Complete styling for the trading and currency converter application */
 
 /* =============== CSS Variables & Themes =============== */
 :root {
   /* Light theme (default) */
-  --light-bg: #f5f7fa;
-  --light-card-bg: #ffffff;
-  --light-text: #2d3748;
-  --light-text-secondary: #718096;
-  --light-border: #e2e8f0;
-  --light-hover: #f7fafc;
-  --light-shadow: rgba(0, 0, 0, 0.1);
-  --light-input-bg: #ffffff;
-  --light-input-border: #cbd5e0;
-  --light-success: #10b981;
-  --light-warning: #f59e0b;
-  --light-error: #ef4444;
-  --light-info: #3b82f6;
+  --bg: #f5f7fa;
+  --card-bg: #ffffff;
+  --text: #2d3748;
+  --text-secondary: #718096;
+  --border: #e2e8f0;
+  --hover: #f7fafc;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --input-bg: #ffffff;
+  --input-border: #cbd5e0;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
+  --primary: #667eea;
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --primary-light: rgba(102, 126, 234, 0.1);
 }
 
 .dark {
-  /* Dark theme */
-  --dark-bg: #1a202c;
-  --dark-card-bg: #2d3748;
-  --dark-text: #f7fafc;
-  --dark-text-secondary: #a0aec0;
-  --dark-border: #4a5568;
-  --dark-hover: #4a5568;
-  --dark-shadow: rgba(0, 0, 0, 0.3);
-  --dark-input-bg: #4a5568;
-  --dark-input-border: #718096;
-  --dark-success: #10b981;
-  --dark-warning: #f59e0b;
-  --dark-error: #ef4444;
-  --dark-info: #3b82f6;
+  --bg: #1a202c;
+  --card-bg: #2d3748;
+  --text: #f7fafc;
+  --text-secondary: #a0aec0;
+  --border: #4a5568;
+  --hover: #4a5568;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --input-bg: #4a5568;
+  --input-border: #718096;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
+  --primary: #667eea;
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --primary-light: rgba(102, 126, 234, 0.2);
 }
 
-/* =============== Global Styles =============== */
+/* =============== Global Styles & Reset =============== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 body {
@@ -51,14 +56,15 @@ body {
 
 .app-container {
   min-height: 100vh;
-  background-color: var(--light-bg);
-  color: var(--light-text);
+  background-color: var(--bg);
+  color: var(--text);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.app-container.dark {
-  background-color: var(--dark-bg);
-  color: var(--dark-text);
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 /* =============== Typography =============== */
@@ -79,19 +85,15 @@ h1, h2, h3, h4, h5, h6 {
 .section-subtitle {
   font-size: 1rem;
   margin-bottom: 0.75rem;
-  color: var(--light-text-secondary);
-}
-
-.dark .section-subtitle {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 /* =============== App Header =============== */
 .app-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-gradient);
   padding: 1rem 2rem;
   color: white;
-  box-shadow: 0 4px 6px var(--light-shadow);
+  box-shadow: 0 4px 6px var(--shadow);
 }
 
 .app-title {
@@ -117,7 +119,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .live-indicator {
-  color: #10b981;
+  color: var(--success);
   font-weight: 600;
   animation: pulse 2s infinite;
 }
@@ -148,7 +150,7 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
   cursor: pointer;
   font-size: 1.2rem;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .header-button:hover {
@@ -179,7 +181,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .tab-button:hover {
@@ -189,7 +191,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .tab-button.active {
   background: white;
-  color: #667eea;
+  color: var(--primary);
   font-weight: 600;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -223,7 +225,7 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 15px;
   cursor: pointer;
   font-size: 0.8rem;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .timeframe-button:hover {
@@ -232,7 +234,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .timeframe-button.active {
   background: white;
-  color: #667eea;
+  color: var(--primary);
   font-weight: 600;
 }
 
@@ -245,29 +247,17 @@ h1, h2, h3, h4, h5, h6 {
 
 /* =============== Cards =============== */
 .card {
-  background: var(--light-card-bg);
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px var(--light-shadow);
-  transition: all 0.3s ease;
-  border: 1px solid var(--light-border);
-}
-
-.card-dark {
-  background: var(--dark-card-bg);
-  border-color: var(--dark-border);
-  color: var(--dark-text);
-}
-
-.card-light {
-  background: var(--light-card-bg);
-  border-color: var(--light-border);
-  color: var(--light-text);
+  box-shadow: 0 4px 6px var(--shadow);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+  border: 1px solid var(--border);
 }
 
 .hoverable:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 12px var(--light-shadow);
+  box-shadow: 0 8px 12px var(--shadow);
 }
 
 /* =============== Currency Converter Grid =============== */
@@ -304,17 +294,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .api-source-badge {
-  background: var(--light-success);
+  background: var(--success);
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.75rem;
   display: inline-block;
   margin-left: 0.5rem;
-}
-
-.dark .api-source-badge {
-  background: var(--dark-success);
 }
 
 .converter-actions {
@@ -342,12 +328,8 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
-  color: var(--light-text-secondary);
+  color: var(--text-secondary);
   font-weight: 500;
-}
-
-.dark .input-label {
-  color: var(--dark-text-secondary);
 }
 
 .currency-select-row {
@@ -364,26 +346,19 @@ h1, h2, h3, h4, h5, h6 {
 .currency-select {
   width: 100%;
   padding: 0.75rem 2rem 0.75rem 1rem;
-  border: 2px solid var(--light-input-border);
+  border: 2px solid var(--input-border);
   border-radius: 8px;
   font-size: 1rem;
-  background: var(--light-input-bg);
-  color: var(--light-text);
+  background: var(--input-bg);
+  color: var(--text);
   cursor: pointer;
   appearance: none;
-  transition: all 0.3s ease;
-}
-
-.dark .currency-select {
-  background: var(--dark-input-bg);
-  border-color: var(--dark-input-border);
-  color: var(--dark-text);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .currency-select:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
 }
 
 .select-arrow {
@@ -392,42 +367,33 @@ h1, h2, h3, h4, h5, h6 {
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
-  color: var(--light-text-secondary);
-}
-
-.dark .select-arrow {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .favorite-button {
   width: 40px;
   height: 40px;
-  border: 2px solid var(--light-input-border);
+  border: 2px solid var(--input-border);
   border-radius: 8px;
-  background: var(--light-input-bg);
-  color: #f59e0b;
+  background: var(--input-bg);
+  color: var(--warning);
   cursor: pointer;
   font-size: 1.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.dark .favorite-button {
-  background: var(--dark-input-bg);
-  border-color: var(--dark-input-border);
+  transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
 .favorite-button:hover {
   transform: scale(1.1);
-  border-color: #f59e0b;
+  border-color: var(--warning);
 }
 
 .favorite-button.active {
-  background: #f59e0b;
+  background: var(--warning);
   color: white;
-  border-color: #f59e0b;
+  border-color: var(--warning);
 }
 
 /* =============== Amount Input =============== */
@@ -442,70 +408,48 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   padding: 0.75rem;
   padding-right: 4rem;
-  border: 2px solid var(--light-input-border);
+  border: 2px solid var(--input-border);
   border-radius: 8px;
   font-size: 1rem;
-  background: var(--light-input-bg);
-  color: var(--light-text);
-  transition: all 0.3s ease;
-}
-
-.dark .amount-input,
-.dark .trade-amount-input {
-  background: var(--dark-input-bg);
-  border-color: var(--dark-input-border);
-  color: var(--dark-text);
+  background: var(--input-bg);
+  color: var(--text);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .amount-input:focus,
 .trade-amount-input:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
 }
 
 .amount-input.error,
 .trade-amount-input.error {
-  border-color: var(--light-error);
-}
-
-.dark .amount-input.error,
-.dark .trade-amount-input.error {
-  border-color: var(--dark-error);
+  border-color: var(--error);
 }
 
 .currency-code {
   position: absolute;
   right: 1rem;
-  color: var(--light-text-secondary);
+  color: var(--text-secondary);
   font-weight: 600;
-}
-
-.dark .currency-code {
-  color: var(--dark-text-secondary);
 }
 
 .converted-amount-display {
   position: relative;
   padding: 0.75rem;
-  border: 2px solid var(--light-input-border);
+  border: 2px solid var(--input-border);
   border-radius: 8px;
-  background: var(--light-hover);
+  background: var(--hover);
   min-height: 3.25rem;
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 
-.dark .converted-amount-display {
-  background: var(--dark-hover);
-  border-color: var(--dark-input-border);
-}
-
 .converted-amount {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #667eea;
+  color: var(--primary);
 }
 
 /* =============== Swap Button =============== */
@@ -520,13 +464,13 @@ h1, h2, h3, h4, h5, h6 {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: #667eea;
+  background: var(--primary);
   border: none;
   color: white;
   font-size: 1.5rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 6px var(--primary-light);
 }
 
 .swap-button:hover {
@@ -546,20 +490,15 @@ h1, h2, h3, h4, h5, h6 {
 .rate-display {
   text-align: center;
   font-size: 0.9rem;
-  color: var(--light-text-secondary);
-  background: var(--light-hover);
+  color: var(--text-secondary);
+  background: var(--hover);
   padding: 0.5rem 1rem;
   border-radius: 20px;
 }
 
-.dark .rate-display {
-  color: var(--dark-text-secondary);
-  background: var(--dark-hover);
-}
-
 .rate-value-highlight {
   font-weight: 600;
-  color: #667eea;
+  color: var(--primary);
 }
 
 /* =============== Quick Amounts =============== */
@@ -575,43 +514,33 @@ h1, h2, h3, h4, h5, h6 {
 
 .quick-amount-button {
   padding: 0.5rem;
-  border: 2px solid var(--light-border);
+  border: 2px solid var(--border);
   border-radius: 6px;
-  background: var(--light-card-bg);
-  color: var(--light-text);
+  background: var(--card-bg);
+  color: var(--text);
   cursor: pointer;
   font-size: 0.9rem;
-  transition: all 0.3s ease;
-}
-
-.dark .quick-amount-button {
-  background: var(--dark-card-bg);
-  border-color: var(--dark-border);
-  color: var(--dark-text);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
 }
 
 .quick-amount-button:hover {
-  background: #667eea;
+  background: var(--primary);
   color: white;
-  border-color: #667eea;
+  border-color: var(--primary);
   transform: translateY(-2px);
 }
 
 .quick-amount-button.active {
-  background: #667eea;
+  background: var(--primary);
   color: white;
-  border-color: #667eea;
+  border-color: var(--primary);
 }
 
 /* =============== Rate Details =============== */
 .rate-details {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 2px solid var(--light-border);
-}
-
-.dark .rate-details {
-  border-top-color: var(--dark-border);
+  border-top: 2px solid var(--border);
 }
 
 .rate-details-title {
@@ -630,12 +559,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .rate-label {
   font-size: 0.8rem;
-  color: var(--light-text-secondary);
+  color: var(--text-secondary);
   margin-bottom: 0.25rem;
-}
-
-.dark .rate-label {
-  color: var(--dark-text-secondary);
 }
 
 .rate-value {
@@ -644,16 +569,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .rate-value.inverse {
-  color: var(--light-warning);
-}
-
-.dark .rate-value.inverse {
-  color: var(--dark-warning);
+  color: var(--warning);
 }
 
 .rate-source {
   font-size: 0.7rem;
-  color: var(--light-success);
+  color: var(--success);
   margin-left: 0.5rem;
 }
 
@@ -669,29 +590,23 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem;
-  border: 2px solid var(--light-border);
+  border: 2px solid var(--border);
   border-radius: 8px;
-  background: var(--light-card-bg);
-  color: var(--light-text);
+  background: var(--card-bg);
+  color: var(--text);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
   text-align: left;
 }
 
-.dark .currency-button {
-  background: var(--dark-card-bg);
-  border-color: var(--dark-border);
-  color: var(--dark-text);
-}
-
 .currency-button:hover {
-  border-color: #667eea;
+  border-color: var(--primary);
   transform: translateY(-2px);
 }
 
 .currency-button.active {
-  border-color: #667eea;
-  background: rgba(102, 126, 234, 0.1);
+  border-color: var(--primary);
+  background: var(--primary-light);
 }
 
 .currency-flag {
@@ -705,11 +620,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .currency-rate {
   font-size: 0.8rem;
-  color: var(--light-text-secondary);
-}
-
-.dark .currency-rate {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .currency-change {
@@ -717,19 +628,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .currency-change.positive {
-  color: var(--light-success);
-}
-
-.dark .currency-change.positive {
-  color: var(--dark-success);
+  color: var(--success);
 }
 
 .currency-change.negative {
-  color: var(--light-error);
-}
-
-.dark .currency-change.negative {
-  color: var(--dark-error);
+  color: var(--error);
 }
 
 /* =============== Quick Conversions =============== */
@@ -740,25 +643,19 @@ h1, h2, h3, h4, h5, h6 {
 
 .quick-conversion-button {
   padding: 1rem;
-  border: 2px solid var(--light-border);
+  border: 2px solid var(--border);
   border-radius: 8px;
-  background: var(--light-card-bg);
-  color: var(--light-text);
+  background: var(--card-bg);
+  color: var(--text);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
   text-align: left;
 }
 
-.dark .quick-conversion-button {
-  background: var(--dark-card-bg);
-  border-color: var(--dark-border);
-  color: var(--dark-text);
-}
-
 .quick-conversion-button:hover {
-  border-color: #667eea;
+  border-color: var(--primary);
   transform: translateX(4px);
-  background: rgba(102, 126, 234, 0.05);
+  background: var(--primary-light);
 }
 
 .conversion-header {
@@ -770,18 +667,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .conversion-pair {
   font-weight: 600;
-  color: #667eea;
+  color: var(--primary);
 }
 
 .conversion-rate {
   font-size: 0.9rem;
-  background: var(--light-hover);
+  background: var(--hover);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
-}
-
-.dark .conversion-rate {
-  background: var(--dark-hover);
 }
 
 .conversion-details {
@@ -789,11 +682,7 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.9rem;
-  color: var(--light-text-secondary);
-}
-
-.dark .conversion-details {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 /* =============== History Table =============== */
@@ -815,42 +704,24 @@ h1, h2, h3, h4, h5, h6 {
 .history-table th {
   text-align: left;
   padding: 0.75rem;
-  background: var(--light-hover);
-  color: var(--light-text-secondary);
+  background: var(--hover);
+  color: var(--text-secondary);
   font-weight: 500;
-  border-bottom: 2px solid var(--light-border);
-}
-
-.dark .history-table th {
-  background: var(--dark-hover);
-  color: var(--dark-text-secondary);
-  border-bottom-color: var(--dark-border);
+  border-bottom: 2px solid var(--border);
 }
 
 .history-table td {
   padding: 0.75rem;
-  border-bottom: 1px solid var(--light-border);
-}
-
-.dark .history-table td {
-  border-bottom-color: var(--dark-border);
+  border-bottom: 1px solid var(--border);
 }
 
 .history-row:hover {
-  background: var(--light-hover);
-}
-
-.dark .history-row:hover {
-  background: var(--dark-hover);
+  background: var(--hover);
 }
 
 .history-time {
   white-space: nowrap;
-  color: var(--light-text-secondary);
-}
-
-.dark .history-time {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .history-currency {
@@ -866,7 +737,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .source-badge {
-  background: var(--light-info);
+  background: var(--info);
   color: white;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
@@ -876,13 +747,13 @@ h1, h2, h3, h4, h5, h6 {
 .clear-history-button {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
-  background: var(--light-error);
+  background: var(--error);
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .clear-history-button:hover {
@@ -913,7 +784,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .balance-display {
-  background: var(--light-success);
+  background: var(--success);
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -922,28 +793,22 @@ h1, h2, h3, h4, h5, h6 {
 
 .toggle-button {
   padding: 0.5rem 1rem;
-  background: var(--light-hover);
-  border: 2px solid var(--light-border);
+  background: var(--hover);
+  border: 2px solid var(--border);
   border-radius: 20px;
-  color: var(--light-text);
+  color: var(--text);
   cursor: pointer;
   font-size: 0.9rem;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   display: flex;
   align-items: center;
   gap: 0.25rem;
 }
 
-.dark .toggle-button {
-  background: var(--dark-hover);
-  border-color: var(--dark-border);
-  color: var(--dark-text);
-}
-
 .toggle-button:hover {
-  background: #667eea;
+  background: var(--primary);
   color: white;
-  border-color: #667eea;
+  border-color: var(--primary);
 }
 
 /* =============== Currency Pair Selector =============== */
@@ -956,32 +821,26 @@ h1, h2, h3, h4, h5, h6 {
 
 .pair-button {
   padding: 0.75rem;
-  border: 2px solid var(--light-border);
+  border: 2px solid var(--border);
   border-radius: 8px;
-  background: var(--light-card-bg);
-  color: var(--light-text);
+  background: var(--card-bg);
+  color: var(--text);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.dark .pair-button {
-  background: var(--dark-card-bg);
-  border-color: var(--dark-border);
-  color: var(--dark-text);
-}
-
 .pair-button:hover {
-  border-color: #667eea;
+  border-color: var(--primary);
   transform: translateY(-2px);
 }
 
 .pair-button.active {
-  background: #667eea;
+  background: var(--primary);
   color: white;
-  border-color: #667eea;
+  border-color: var(--primary);
 }
 
 .pair-name {
@@ -991,11 +850,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .pair-spread {
   font-size: 0.7rem;
-  color: var(--light-text-secondary);
-}
-
-.dark .pair-spread {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .pair-button.active .pair-spread {
@@ -1004,7 +859,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* =============== Current Rate Display =============== */
 .current-rate-display {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-gradient);
   color: white;
   padding: 1rem;
   border-radius: 8px;
@@ -1037,31 +892,31 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
   font-size: 1rem;
 }
 
 .direction-button.buy {
   background: rgba(16, 185, 129, 0.1);
-  color: var(--light-success);
-  border: 2px solid var(--light-success);
+  color: var(--success);
+  border: 2px solid var(--success);
 }
 
 .direction-button.buy:hover,
 .direction-button.buy.active {
-  background: var(--light-success);
+  background: var(--success);
   color: white;
 }
 
 .direction-button.sell {
   background: rgba(239, 68, 68, 0.1);
-  color: var(--light-error);
-  border: 2px solid var(--light-error);
+  color: var(--error);
+  border: 2px solid var(--error);
 }
 
 .direction-button.sell:hover,
 .direction-button.sell.active {
-  background: var(--light-error);
+  background: var(--error);
   color: white;
 }
 
@@ -1075,32 +930,26 @@ h1, h2, h3, h4, h5, h6 {
 
 .order-type-button {
   padding: 0.75rem;
-  border: 2px solid var(--light-border);
+  border: 2px solid var(--border);
   border-radius: 8px;
-  background: var(--light-card-bg);
-  color: var(--light-text);
+  background: var(--card-bg);
+  color: var(--text);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.dark .order-type-button {
-  background: var(--dark-card-bg);
-  border-color: var(--dark-border);
-  color: var(--dark-text);
-}
-
 .order-type-button:hover {
-  border-color: #667eea;
+  border-color: var(--primary);
   transform: translateY(-2px);
 }
 
 .order-type-button.active {
-  background: #667eea;
+  background: var(--primary);
   color: white;
-  border-color: #667eea;
+  border-color: var(--primary);
 }
 
 .order-icon {
@@ -1118,11 +967,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .order-fee {
   font-size: 0.7rem;
-  color: var(--light-text-secondary);
-}
-
-.dark .order-fee {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .order-type-button.active .order-fee {
@@ -1139,33 +984,21 @@ h1, h2, h3, h4, h5, h6 {
 
 .available-amount {
   font-size: 0.9rem;
-  color: var(--light-text-secondary);
-}
-
-.dark .available-amount {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .amount-currency {
   position: absolute;
   right: 1rem;
-  color: var(--light-text-secondary);
+  color: var(--text-secondary);
   font-weight: 600;
-}
-
-.dark .amount-currency {
-  color: var(--dark-text-secondary);
 }
 
 .field-error {
   display: block;
   font-size: 0.8rem;
-  color: var(--light-error);
+  color: var(--error);
   margin-top: 0.25rem;
-}
-
-.dark .field-error {
-  color: var(--dark-error);
 }
 
 .quick-amount-buttons {
@@ -1177,42 +1010,32 @@ h1, h2, h3, h4, h5, h6 {
 
 .quick-trade-amount-button {
   padding: 0.5rem 1rem;
-  border: 2px solid var(--light-border);
+  border: 2px solid var(--border);
   border-radius: 20px;
-  background: var(--light-card-bg);
-  color: var(--light-text);
+  background: var(--card-bg);
+  color: var(--text);
   cursor: pointer;
   font-size: 0.8rem;
-  transition: all 0.3s ease;
-}
-
-.dark .quick-trade-amount-button {
-  background: var(--dark-card-bg);
-  border-color: var(--dark-border);
-  color: var(--dark-text);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
 }
 
 .quick-trade-amount-button:hover {
-  background: #667eea;
+  background: var(--primary);
   color: white;
-  border-color: #667eea;
+  border-color: var(--primary);
 }
 
 .quick-trade-amount-button.active {
-  background: #667eea;
+  background: var(--primary);
   color: white;
-  border-color: #667eea;
+  border-color: var(--primary);
 }
 
 /* =============== Advanced Settings =============== */
 .advanced-settings {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 2px solid var(--light-border);
-}
-
-.dark .advanced-settings {
-  border-top-color: var(--dark-border);
+  border-top: 2px solid var(--border);
 }
 
 .advanced-setting {
@@ -1223,47 +1046,30 @@ h1, h2, h3, h4, h5, h6 {
 .risk-input {
   width: 100%;
   padding: 0.75rem;
-  border: 2px solid var(--light-input-border);
+  border: 2px solid var(--input-border);
   border-radius: 8px;
   font-size: 1rem;
-  background: var(--light-input-bg);
-  color: var(--light-text);
-  transition: all 0.3s ease;
-}
-
-.dark .advanced-input,
-.dark .risk-input {
-  background: var(--dark-input-bg);
-  border-color: var(--dark-input-border);
-  color: var(--dark-text);
+  background: var(--input-bg);
+  color: var(--text);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .advanced-input:focus,
 .risk-input:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
 }
 
 .advanced-input.error,
 .risk-input.error {
-  border-color: var(--light-error);
-}
-
-.dark .advanced-input.error,
-.dark .risk-input.error {
-  border-color: var(--dark-error);
+  border-color: var(--error);
 }
 
 .risk-management-section {
-  background: var(--light-hover);
+  background: var(--hover);
   padding: 1rem;
   border-radius: 8px;
   margin-top: 1rem;
-}
-
-.dark .risk-management-section {
-  background: var(--dark-hover);
 }
 
 .risk-inputs-grid {
@@ -1277,11 +1083,7 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
   font-size: 0.8rem;
   margin-bottom: 0.25rem;
-  color: var(--light-text-secondary);
-}
-
-.dark .risk-label {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .risk-level-buttons {
@@ -1293,19 +1095,13 @@ h1, h2, h3, h4, h5, h6 {
 .risk-level-button {
   flex: 1;
   padding: 0.5rem;
-  border: 2px solid var(--light-border);
+  border: 2px solid var(--border);
   border-radius: 6px;
-  background: var(--light-card-bg);
-  color: var(--light-text);
+  background: var(--card-bg);
+  color: var(--text);
   cursor: pointer;
   font-size: 0.8rem;
-  transition: all 0.3s ease;
-}
-
-.dark .risk-level-button {
-  background: var(--dark-card-bg);
-  border-color: var(--dark-border);
-  color: var(--dark-text);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
 }
 
 .risk-level-button:hover {
@@ -1317,6 +1113,19 @@ h1, h2, h3, h4, h5, h6 {
   border-color: transparent;
 }
 
+/* Low risk active color */
+.risk-level-button[data-risk="low"].active {
+  background: var(--success);
+}
+/* Medium risk active color */
+.risk-level-button[data-risk="medium"].active {
+  background: var(--warning);
+}
+/* High risk active color */
+.risk-level-button[data-risk="high"].active {
+  background: var(--error);
+}
+
 .leverage-section {
   margin-top: 1rem;
 }
@@ -1325,13 +1134,9 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   height: 6px;
   border-radius: 3px;
-  background: var(--light-border);
+  background: var(--border);
   outline: none;
   -webkit-appearance: none;
-}
-
-.dark .trade-slider {
-  background: var(--dark-border);
 }
 
 .trade-slider::-webkit-slider-thumb {
@@ -1339,9 +1144,9 @@ h1, h2, h3, h4, h5, h6 {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #667eea;
+  background: var(--primary);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.2s ease;
 }
 
 .trade-slider::-webkit-slider-thumb:hover {
@@ -1353,19 +1158,15 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 1.5rem;
   padding: 1rem;
   border-radius: 8px;
-  background: var(--light-hover);
-}
-
-.dark .trade-summary {
-  background: var(--dark-hover);
+  background: var(--hover);
 }
 
 .trade-summary.valid {
-  border-left: 4px solid var(--light-success);
+  border-left: 4px solid var(--success);
 }
 
 .trade-summary.invalid {
-  border-left: 4px solid var(--light-error);
+  border-left: 4px solid var(--error);
 }
 
 .summary-title {
@@ -1377,7 +1178,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .valid-badge {
-  background: var(--light-success);
+  background: var(--success);
   color: white;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
@@ -1392,12 +1193,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .summary-label {
   font-size: 0.8rem;
-  color: var(--light-text-secondary);
+  color: var(--text-secondary);
   margin-bottom: 0.25rem;
-}
-
-.dark .summary-label {
-  color: var(--dark-text-secondary);
 }
 
 .summary-value {
@@ -1405,31 +1202,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .summary-value.primary {
-  color: #667eea;
+  color: var(--primary);
 }
 
 .summary-value.success {
-  color: var(--light-success);
-}
-
-.dark .summary-value.success {
-  color: var(--dark-success);
+  color: var(--success);
 }
 
 .summary-value.warning {
-  color: var(--light-warning);
-}
-
-.dark .summary-value.warning {
-  color: var(--dark-warning);
+  color: var(--warning);
 }
 
 .summary-value.error {
-  color: var(--light-error);
-}
-
-.dark .summary-value.error {
-  color: var(--dark-error);
+  color: var(--error);
 }
 
 /* =============== Error Messages =============== */
@@ -1437,16 +1222,12 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 1rem;
   padding: 1rem;
   background: rgba(239, 68, 68, 0.1);
-  border: 2px solid var(--light-error);
+  border: 2px solid var(--error);
   border-radius: 8px;
 }
 
-.dark .error-messages {
-  background: rgba(239, 68, 68, 0.2);
-}
-
 .error-title {
-  color: var(--light-error);
+  color: var(--error);
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
@@ -1457,7 +1238,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .error-list li {
-  color: var(--light-error);
+  color: var(--error);
   font-size: 0.9rem;
   padding: 0.25rem 0;
   display: flex;
@@ -1467,7 +1248,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .error-list li::before {
   content: "•";
-  color: var(--light-error);
+  color: var(--error);
 }
 
 /* =============== Execute Button =============== */
@@ -1479,7 +1260,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
   margin-top: 1.5rem;
   display: flex;
   align-items: center;
@@ -1488,7 +1269,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .execute-button.buy {
-  background: var(--light-success);
+  background: var(--success);
   color: white;
 }
 
@@ -1499,7 +1280,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .execute-button.sell {
-  background: var(--light-error);
+  background: var(--error);
   color: white;
 }
 
@@ -1517,12 +1298,8 @@ h1, h2, h3, h4, h5, h6 {
 .keyboard-hint {
   text-align: center;
   font-size: 0.8rem;
-  color: var(--light-text-secondary);
+  color: var(--text-secondary);
   margin-top: 0.5rem;
-}
-
-.dark .keyboard-hint {
-  color: var(--dark-text-secondary);
 }
 
 /* =============== Chart Section =============== */
@@ -1548,18 +1325,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .chart-grid-line {
-  stroke: var(--light-border);
+  stroke: var(--border);
   stroke-width: 1;
   stroke-dasharray: 5,5;
 }
 
-.dark .chart-grid-line {
-  stroke: var(--dark-border);
-}
-
 .chart-line {
   fill: none;
-  stroke: #667eea;
+  stroke: var(--primary);
   stroke-width: 2;
 }
 
@@ -1576,7 +1349,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .current-price {
   font-weight: 600;
-  color: #10b981;
+  color: var(--success);
 }
 
 .chart-update-time {
@@ -1601,13 +1374,8 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: space-between;
   padding: 0.5rem;
   font-weight: 600;
-  color: var(--light-text-secondary);
-  border-bottom: 2px solid var(--light-border);
-}
-
-.dark .order-book-header {
-  color: var(--dark-text-secondary);
-  border-bottom-color: var(--dark-border);
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--border);
 }
 
 .order-book-row {
@@ -1615,7 +1383,7 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: space-between;
   padding: 0.5rem;
   font-size: 0.9rem;
-  transition: all 0.3s ease;
+  transition: transform 0.2s ease;
 }
 
 .order-book-row:hover {
@@ -1623,19 +1391,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .bid-row {
-  color: var(--light-success);
-}
-
-.dark .bid-row {
-  color: var(--dark-success);
+  color: var(--success);
 }
 
 .ask-row {
-  color: var(--light-error);
-}
-
-.dark .ask-row {
-  color: var(--dark-error);
+  color: var(--error);
 }
 
 .bid-price,
@@ -1644,11 +1404,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .order-volume {
-  color: var(--light-text-secondary);
-}
-
-.dark .order-volume {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 /* =============== Portfolio Dashboard =============== */
@@ -1673,23 +1429,15 @@ h1, h2, h3, h4, h5, h6 {
 
 .metric-card {
   padding: 1rem;
-  background: var(--light-hover);
+  background: var(--hover);
   border-radius: 8px;
   text-align: center;
 }
 
-.dark .metric-card {
-  background: var(--dark-hover);
-}
-
 .metric-label {
   font-size: 0.8rem;
-  color: var(--light-text-secondary);
+  color: var(--text-secondary);
   margin-bottom: 0.5rem;
-}
-
-.dark .metric-label {
-  color: var(--dark-text-secondary);
 }
 
 .metric-value {
@@ -1698,31 +1446,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .metric-value.primary {
-  color: #667eea;
+  color: var(--primary);
 }
 
 .metric-value.success {
-  color: var(--light-success);
-}
-
-.dark .metric-value.success {
-  color: var(--dark-success);
+  color: var(--success);
 }
 
 .metric-value.warning {
-  color: var(--light-warning);
-}
-
-.dark .metric-value.warning {
-  color: var(--dark-warning);
+  color: var(--warning);
 }
 
 .metric-value.error {
-  color: var(--light-error);
-}
-
-.dark .metric-value.error {
-  color: var(--dark-error);
+  color: var(--error);
 }
 
 .portfolio-chart {
@@ -1744,14 +1480,10 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background: var(--light-hover);
+  background: var(--hover);
   border-radius: 8px;
   border-left: 4px solid transparent;
-  transition: all 0.3s ease;
-}
-
-.dark .holding-item {
-  background: var(--dark-hover);
+  transition: transform 0.2s ease, background-color 0.3s ease;
 }
 
 .holding-item:hover {
@@ -1765,11 +1497,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .holding-name {
   font-size: 0.8rem;
-  color: var(--light-text-secondary);
-}
-
-.dark .holding-name {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .holding-details {
@@ -1782,11 +1510,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .holding-value {
   font-size: 0.8rem;
-  color: var(--light-text-secondary);
-}
-
-.dark .holding-value {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 /* =============== Risk Dashboard =============== */
@@ -1824,13 +1548,9 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background: var(--light-hover);
+  background: var(--hover);
   border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.dark .risk-control-item {
-  background: var(--dark-hover);
+  transition: transform 0.2s ease;
 }
 
 .risk-control-item:hover {
@@ -1844,11 +1564,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .risk-control-details {
   font-size: 0.8rem;
-  color: var(--light-text-secondary);
-}
-
-.dark .risk-control-details {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .risk-control-indicator {
@@ -1880,32 +1596,26 @@ h1, h2, h3, h4, h5, h6 {
 
 .trade-search {
   padding: 0.5rem 1rem;
-  border: 2px solid var(--light-border);
+  border: 2px solid var(--border);
   border-radius: 20px;
   font-size: 0.9rem;
-  background: var(--light-input-bg);
-  color: var(--light-text);
+  background: var(--input-bg);
+  color: var(--text);
   min-width: 200px;
-}
-
-.dark .trade-search {
-  background: var(--dark-input-bg);
-  border-color: var(--dark-border);
-  color: var(--dark-text);
+  transition: border-color 0.3s ease;
 }
 
 .trade-search:focus {
-  outline: none;
-  border-color: #667eea;
+  border-color: var(--primary);
 }
 
 .trade-filter {
   padding: 0.5rem 2rem 0.5rem 1rem;
-  border: 2px solid var(--light-border);
+  border: 2px solid var(--border);
   border-radius: 20px;
   font-size: 0.9rem;
-  background: var(--light-input-bg);
-  color: var(--light-text);
+  background: var(--input-bg);
+  color: var(--text);
   cursor: pointer;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
@@ -1914,15 +1624,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .dark .trade-filter {
-  background: var(--dark-input-bg);
-  border-color: var(--dark-border);
-  color: var(--dark-text);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a0aec0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 }
 
 .trade-filter:focus {
-  outline: none;
-  border-color: #667eea;
+  border-color: var(--primary);
 }
 
 .trade-history-table-container {
@@ -1939,33 +1645,19 @@ h1, h2, h3, h4, h5, h6 {
 .trade-history-table th {
   text-align: left;
   padding: 0.75rem;
-  background: var(--light-hover);
-  color: var(--light-text-secondary);
+  background: var(--hover);
+  color: var(--text-secondary);
   font-weight: 500;
-  border-bottom: 2px solid var(--light-border);
-}
-
-.dark .trade-history-table th {
-  background: var(--dark-hover);
-  color: var(--dark-text-secondary);
-  border-bottom-color: var(--dark-border);
+  border-bottom: 2px solid var(--border);
 }
 
 .trade-history-table td {
   padding: 0.75rem;
-  border-bottom: 1px solid var(--light-border);
-}
-
-.dark .trade-history-table td {
-  border-bottom-color: var(--dark-border);
+  border-bottom: 1px solid var(--border);
 }
 
 .trade-row:hover {
-  background: var(--light-hover);
-}
-
-.dark .trade-row:hover {
-  background: var(--dark-hover);
+  background: var(--hover);
 }
 
 .trade-row.open {
@@ -1986,11 +1678,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .trade-date {
   font-size: 0.7rem;
-  color: var(--light-text-secondary);
-}
-
-.dark .trade-date {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .trade-direction-indicator {
@@ -2008,20 +1696,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .direction-badge.buy {
   background: rgba(16, 185, 129, 0.2);
-  color: var(--light-success);
-}
-
-.dark .direction-badge.buy {
-  color: var(--dark-success);
+  color: var(--success);
 }
 
 .direction-badge.sell {
   background: rgba(239, 68, 68, 0.2);
-  color: var(--light-error);
-}
-
-.dark .direction-badge.sell {
-  color: var(--dark-error);
+  color: var(--error);
 }
 
 .status-badge {
@@ -2038,29 +1718,17 @@ h1, h2, h3, h4, h5, h6 {
 
 .status-badge.pending {
   background: rgba(245, 158, 11, 0.2);
-  color: var(--light-warning);
-}
-
-.dark .status-badge.pending {
-  color: var(--dark-warning);
+  color: var(--warning);
 }
 
 .status-badge.profit {
   background: rgba(16, 185, 129, 0.2);
-  color: var(--light-success);
-}
-
-.dark .status-badge.profit {
-  color: var(--dark-success);
+  color: var(--success);
 }
 
 .status-badge.loss {
   background: rgba(239, 68, 68, 0.2);
-  color: var(--light-error);
-}
-
-.dark .status-badge.loss {
-  color: var(--dark-error);
+  color: var(--error);
 }
 
 .pnl-value {
@@ -2068,19 +1736,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .pnl-value.profit {
-  color: var(--light-success);
-}
-
-.dark .pnl-value.profit {
-  color: var(--dark-success);
+  color: var(--success);
 }
 
 .pnl-value.loss {
-  color: var(--light-error);
-}
-
-.dark .pnl-value.loss {
-  color: var(--dark-error);
+  color: var(--error);
 }
 
 .action-button {
@@ -2089,11 +1749,11 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 4px;
   font-size: 0.8rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .action-button.close {
-  background: var(--light-success);
+  background: var(--success);
   color: white;
 }
 
@@ -2102,7 +1762,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .action-button.cancel {
-  background: var(--light-warning);
+  background: var(--warning);
   color: white;
 }
 
@@ -2114,13 +1774,9 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   justify-content: space-between;
   padding: 1rem;
-  background: var(--light-hover);
+  background: var(--hover);
   border-radius: 8px;
   font-size: 0.9rem;
-}
-
-.dark .trade-history-summary {
-  background: var(--dark-hover);
 }
 
 .summary-pnl {
@@ -2129,19 +1785,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .summary-pnl.profit {
-  color: var(--light-success);
-}
-
-.dark .summary-pnl.profit {
-  color: var(--dark-success);
+  color: var(--success);
 }
 
 .summary-pnl.loss {
-  color: var(--light-error);
-}
-
-.dark .summary-pnl.loss {
-  color: var(--dark-error);
+  color: var(--error);
 }
 
 /* =============== Notification System =============== */
@@ -2157,22 +1805,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .notification {
-  background: var(--light-card-bg);
+  background: var(--card-bg);
   border-left: 4px solid;
   border-radius: 8px;
   padding: 1rem;
-  box-shadow: 0 4px 6px var(--light-shadow);
+  box-shadow: 0 4px 6px var(--shadow);
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
   position: relative;
   overflow: hidden;
   animation: slideIn 0.3s ease;
-}
-
-.dark .notification {
-  background: var(--dark-card-bg);
-  box-shadow: 0 4px 6px var(--dark-shadow);
 }
 
 @keyframes slideIn {
@@ -2187,19 +1830,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .notification-success {
-  border-left-color: var(--light-success);
+  border-left-color: var(--success);
 }
 
 .notification-error {
-  border-left-color: var(--light-error);
+  border-left-color: var(--error);
 }
 
 .notification-warning {
-  border-left-color: var(--light-warning);
+  border-left-color: var(--warning);
 }
 
 .notification-info {
-  border-left-color: var(--light-info);
+  border-left-color: var(--info);
 }
 
 .notification-icon {
@@ -2218,11 +1861,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .notification-message {
   font-size: 0.8rem;
-  color: var(--light-text-secondary);
-}
-
-.dark .notification-message {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .notification-close-button {
@@ -2230,21 +1869,14 @@ h1, h2, h3, h4, h5, h6 {
   border: none;
   font-size: 1.2rem;
   cursor: pointer;
-  color: var(--light-text-secondary);
+  color: var(--text-secondary);
   padding: 0;
   line-height: 1;
+  transition: color 0.2s ease;
 }
 
 .notification-close-button:hover {
-  color: var(--light-text);
-}
-
-.dark .notification-close-button {
-  color: var(--dark-text-secondary);
-}
-
-.dark .notification-close-button:hover {
-  color: var(--dark-text);
+  color: var(--text);
 }
 
 .notification-progress {
@@ -2282,17 +1914,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-content {
-  background: var(--light-card-bg);
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 2rem;
   max-width: 400px;
   width: 90%;
   text-align: center;
   animation: slideUp 0.3s ease;
-}
-
-.dark .modal-content {
-  background: var(--dark-card-bg);
 }
 
 @keyframes slideUp {
@@ -2312,19 +1940,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-icon.warning {
-  color: var(--light-warning);
+  color: var(--warning);
 }
 
 .modal-icon.danger {
-  color: var(--light-error);
+  color: var(--error);
 }
 
 .modal-icon.info {
-  color: var(--light-info);
+  color: var(--info);
 }
 
 .modal-icon.success {
-  color: var(--light-success);
+  color: var(--success);
 }
 
 .modal-title {
@@ -2333,12 +1961,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-message {
-  color: var(--light-text-secondary);
+  color: var(--text-secondary);
   margin-bottom: 1.5rem;
-}
-
-.dark .modal-message {
-  color: var(--dark-text-secondary);
 }
 
 .modal-actions {
@@ -2354,11 +1978,11 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .modal-confirm-button.warning {
-  background: var(--light-warning);
+  background: var(--warning);
   color: white;
 }
 
@@ -2367,7 +1991,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-confirm-button.danger {
-  background: var(--light-error);
+  background: var(--error);
   color: white;
 }
 
@@ -2376,7 +2000,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-confirm-button.info {
-  background: var(--light-info);
+  background: var(--info);
   color: white;
 }
 
@@ -2385,7 +2009,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-confirm-button.success {
-  background: var(--light-success);
+  background: var(--success);
   color: white;
 }
 
@@ -2394,21 +2018,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-cancel-button {
-  background: var(--light-hover);
-  color: var(--light-text);
-}
-
-.dark .modal-cancel-button {
-  background: var(--dark-hover);
-  color: var(--dark-text);
+  background: var(--hover);
+  color: var(--text);
 }
 
 .modal-cancel-button:hover {
-  background: var(--light-border);
-}
-
-.dark .modal-cancel-button:hover {
-  background: var(--dark-border);
+  background: var(--border);
 }
 
 /* =============== Tooltip =============== */
@@ -2528,7 +2143,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background: var(--primary-gradient);
   transition: width 0.3s ease;
 }
 
@@ -2547,33 +2162,21 @@ h1, h2, h3, h4, h5, h6 {
 .empty-title {
   font-size: 1rem;
   margin-bottom: 0.5rem;
-  color: var(--light-text-secondary);
-}
-
-.dark .empty-title {
-  color: var(--dark-text-secondary);
+  color: var(--text-secondary);
 }
 
 .empty-subtitle {
   font-size: 0.9rem;
-  color: var(--light-text-secondary);
+  color: var(--text-secondary);
   opacity: 0.7;
-}
-
-.dark .empty-subtitle {
-  color: var(--dark-text-secondary);
 }
 
 /* =============== Skeleton Loader =============== */
 .skeleton-loader {
-  background: var(--light-hover);
+  background: var(--hover);
   border-radius: 4px;
   position: relative;
   overflow: hidden;
-}
-
-.dark .skeleton-loader {
-  background: var(--dark-hover);
 }
 
 .skeleton-shimmer {
@@ -2605,20 +2208,20 @@ h1, h2, h3, h4, h5, h6 {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-gradient);
   border: none;
   color: white;
   font-size: 1.5rem;
   cursor: pointer;
   z-index: 100;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
   .mobile-menu-button {
     display: flex;
-    align-items: center;
-    justify-content: center;
   }
 }
 
@@ -2643,16 +2246,11 @@ h1, h2, h3, h4, h5, h6 {
     position: fixed;
     bottom: 6rem;
     right: 2rem;
-    background: var(--light-card-bg);
+    background: var(--card-bg);
     border-radius: 12px;
     padding: 1rem;
-    box-shadow: 0 4px 12px var(--light-shadow);
+    box-shadow: 0 4px 12px var(--shadow);
     min-width: 200px;
-  }
-  
-  .dark .mobile-menu {
-    background: var(--dark-card-bg);
-    box-shadow: 0 4px 12px var(--dark-shadow);
   }
 }
 
@@ -2662,28 +2260,20 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0.75rem 1rem;
   border: none;
   background: none;
-  color: var(--light-text);
+  color: var(--text);
   text-align: left;
   cursor: pointer;
   border-radius: 6px;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
   font-size: 1rem;
 }
 
-.dark .mobile-tab-button {
-  color: var(--dark-text);
-}
-
 .mobile-tab-button:hover {
-  background: var(--light-hover);
-}
-
-.dark .mobile-tab-button:hover {
-  background: var(--dark-hover);
+  background: var(--hover);
 }
 
 .mobile-tab-button.active {
-  background: #667eea;
+  background: var(--primary);
   color: white;
 }
 
@@ -2693,7 +2283,7 @@ h1, h2, h3, h4, h5, h6 {
   top: 1rem;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--light-error);
+  background: var(--error);
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -2706,13 +2296,13 @@ h1, h2, h3, h4, h5, h6 {
 
 .retry-button {
   background: white;
-  color: var(--light-error);
+  color: var(--error);
   border: none;
   padding: 0.25rem 1rem;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .retry-button:hover {
@@ -2724,14 +2314,9 @@ h1, h2, h3, h4, h5, h6 {
 .app-footer {
   text-align: center;
   padding: 2rem;
-  color: var(--light-text-secondary);
-  border-top: 1px solid var(--light-border);
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border);
   margin-top: 2rem;
-}
-
-.dark .app-footer {
-  color: var(--dark-text-secondary);
-  border-top-color: var(--dark-border);
 }
 
 /* =============== Utility Classes =============== */
@@ -2785,28 +2370,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--light-hover);
-}
-
-.dark ::-webkit-scrollbar-track {
-  background: var(--dark-hover);
+  background: var(--hover);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e0;
+  background: var(--input-border);
   border-radius: 4px;
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: #4a5568;
-}
-
 ::-webkit-scrollbar-thumb:hover {
-  background: #a0aec0;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #718096;
+  background: var(--text-secondary);
 }
 
 /* =============== Print Styles =============== */
@@ -2831,5 +2404,17 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: none;
     border: 1px solid #000;
     break-inside: avoid;
+  }
+}
+
+/* =============== Accessibility: Reduced Motion =============== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

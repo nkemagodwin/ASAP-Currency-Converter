@@ -21,10 +21,10 @@
  * - Many small bug fixes and UI polish
  */
 
-import React, { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef  } from 'react';
 import PropTypes from 'prop-types';
 import './App.css';
-import { LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar, CartesianGrid, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar, CartesianGrid, } from 'recharts';
 
 // =============================================================================
 // SECTION 1: CONSTANTS & CONFIGURATIONS
@@ -125,14 +125,6 @@ const formatLargeNumber = (value) => {
   if (value >= 1000000) return `$${(value / 1000000).toFixed(2)}M`;
   if (value >= 1000) return `$${(value / 1000).toFixed(2)}K`;
   return `$${formatNumber(value)}`;
-};
-
-const debounce = (func, wait) => {
-  let timeout;
-  return (...args) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
 };
 
 // =============================================================================
@@ -1557,7 +1549,7 @@ const LiveCurrencySimulator = () => {
   useEffect(() => {
     showNotification(isOnline ? 'Back online! Refreshing data...' : 'You are offline. Using cached data if available.', isOnline ? 'success' : 'warning');
     if (isOnline) liveData.refresh();
-  }, [isOnline]);
+  });
 
   const showNotification = useCallback((message, type = 'info') => {
     const id = Date.now();

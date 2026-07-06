@@ -1627,7 +1627,7 @@ const LiveCurrencySimulator = () => {
   }, [showNotification, setPortfolio, setTrades]);
 
   const handleCancelOrder = useCallback((tradeId) => {
-    setTrades(prev => prev.map(trade => {
+    setTrades(prev => prev.map(trade => { 
       if (trade.id !== tradeId || trade.status !== TRADE_STATUS.PENDING) return trade;
       setPortfolio(prev => ({ ...prev, balance: prev.balance + trade.margin }));
       showNotification('Order cancelled successfully', 'info');

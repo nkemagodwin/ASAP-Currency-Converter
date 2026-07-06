@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+    <title>Lightup Electrical | Invoice & Quotation Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: #f0f4f8;
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        .app-header {
+            max-width: 1200px;
+            margin: 0 auto 15px;
+            text-align: center;
+        }
+
+        .app-header h1 {
+            color: #0b4b66;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .app-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        @media (max-width: 1000px) {
+            .app-container {
+                flex-direction: column;
+            }
+        }
+
+        /* GENERATOR FORM */
+        .generator-form {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            width: 400px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 15px;
+            max-height: calc(100vh - 30px);
+            overflow-y: auto;
+        }
+
+        @media (max-width: 1000px) {
+            .generator-form {
+                width: 100%;
+                position: static;
+                max-height: none;
+            }
+        }
+
+        .generator-form h2 {
+            color: #0b4b66;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .mode-switch {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            background: #f0f5fa;
+            padding: 4px;
+            border-radius: 25px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 22px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 13px;
+        }
+
+        .mode-btn.active {
+            background: #2cb9d6;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1e405b;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d0dbe6;
+            border-radius: 8px;
+            font-size: 13px;
+            transition: 0.2s;
+            background: #fafcfd;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #2cb9d6;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(44, 185, 214, 0.1);
+            background: white;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .items-section {
+            margin-top: 5px;
+        }
+
+        .items-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .items-header label {
+            font-weight: 600;
+            color: #1e405b;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .item-row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+
+        .item-row input {
+            padding: 7px 10px;
+            border: 1px solid #d0dbe6;
+            border-radius: 6px;
+            font-size: 12px;
+            background: #fafcfd;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-row input:focus {
+            border-color: #2cb9d6;
+            outline: none;
+            background: white;
+        }
+
+        .item-row .item-desc {
+            flex: 3;
+        }
+        .item-row .item-qty {
+            flex: 1;
+            min-width: 50px;
+        }
+        .item-row .item-price {
+            flex: 1.5;
+            min-width: 70px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .btn-add {
+            background: #e1f3fa;
+            color: #0b4b66;
+            padding: 6px 12px;
+            font-size: 11px;
+        }
+
+        .btn-add:hover {
+            background: #c9eaf5;
+        }
+
+        .btn-remove {
+            background: #ffe5e5;
+            color: #c44536;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .btn-remove:hover {
+            background: #ffd0d0;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-export {
+            flex: 1;
+            min-width: 100px;
+            background: white;
+            border: 2px solid #2cb9d6;
+            color: #0b4b66;
+            padding: 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .btn-export:hover {
+            background: #e1f3fa;
+        }
+
+        /* PREVIEW PANEL */
+        .preview-wrapper {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .preview-header-bar {
+            background: #f8fafc;
+            padding: 10px 20px;
+            border-bottom: 1px solid #e2eef6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-header-bar span {
+            font-weight: 700;
+            color: #0b4b66;
+            font-size: 13px;
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #2cb9d6;
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background: #2cb9d6;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .preview-panel {
+            min-height: 500px;
+            background: white;
+            padding: 0;
+        }
+
+        /* Document Styles */
+        .doc-top-bar,
+        .doc-bottom-bar {
+            height: 8px;
+            background: #2cb9d6;
+        }
+
+        .doc-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 25px 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo-area {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background: #f0f7fd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            border: 1px solid #bee0f0;
+            flex-shrink: 0;
+        }
+
+        .company-info h3 {
+            font-size: 18px;
+            color: #153e55;
+            margin-bottom: 2px;
+        }
+
+        .company-info p {
+            font-size: 12px;
+            color: #2d5068;
+            margin: 1px 0;
+        }
+
+        .doc-meta {
+            text-align: right;
+        }
+
+        .doc-meta h2 {
+            font-size: 22px;
+            color: #0a4057;
+            margin-bottom: 5px;
+        }
+
+        .doc-meta p {
+            font-size: 13px;
+            margin: 2px 0;
+            color: #2d5068;
+        }
+
+        .doc-section {
+            padding: 10px 25px 20px;
+        }
+
+        .billing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .billing-grid div {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .billing-grid strong {
+            color: #0b4b66;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        th {
+            background: #2cb9d6;
+            color: white;
+            padding: 9px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #d9e9f5;
+        }
+
+        tr:nth-child(even) {
+            background: #fafdfe;
+        }
+
+        .total-box {
+            width: 280px;
+            margin-left: auto;
+            margin-top: 12px;
+            border: 1px solid #cbddee;
+            border-radius: 6px;
+        }
+
+        .total-box div {
+            display: flex;
+            justify-content: space-between;
+            padding: 9px 14px;
+            border-bottom: 1px solid #e2eef9;
+            font-size: 13px;
+        }
+
+        .total-box div:last-child {
+            background: #2cb9d6;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            border-bottom: none;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .stamp {
+            width: 100px;
+            height: 100px;
+            border: 3px solid #c44536;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #c44536;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 15px;
+            text-align: center;
+            line-height: 1.2;
+            transform: rotate(-10deg);
+            opacity: 0.85;
+        }
+
+        .notes-section {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #1f4055;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 3px solid #2cb9d6;
+        }
+
+        .quotation-title-section {
+            text-align: center;
+            padding: 20px 25px 10px;
+        }
+
+        .quotation-title-section h2 {
+            margin-bottom: 8px;
+            color: #0a3140;
+            font-size: 18px;
+            line-height: 1.4;
+        }
+
+        .signature-area {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .doc-header {
+                flex-direction: column;
+            }
+            .doc-meta {
+                text-align: left;
+            }
+            .total-box {
+                width: 100%;
+            }
+            .billing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <h1>⚡ Lightup Electrical</h1>
+        <p>Invoice & Quotation Generator — Fill the form to see live preview</p>
+    </div>
+
+    <div class="app-container">
+        <!-- GENERATOR FORM -->
+        <div class="generator-form" id="generatorForm">
+            <div class="mode-switch" id="modeSwitch">
+                <button class="mode-btn active" data-mode="invoice">🧾 Invoice</button>
+                <button class="mode-btn" data-mode="quotation">📊 Quotation</button>
+            </div>
+
+            <div class="form-group">
+                <label>Company Name</label>
+                <input type="text" id="companyName" value="LIGHTUP ELECTRICAL & ENERGY SOLUTIONS">
+            </div>
+
+            <div class="form-group">
+                <label>Address</label>
+                <input type="text" id="companyAddress" value="15 Adeola Odeku Street, Victoria Island, Lagos">
+            </div>
+
+            <div class="form-group">
+                <label>Phone | Email</label>
+                <input type="text" id="companyContact" value="0803 123 4567 | info@lightupelectrical.com.ng">
+            </div>
+
+            <div id="invoiceFields">
+                <div class="form-group">
+                    <label>Invoice Number</label>
+                    <input type="text" id="invoiceNumber" value="INV-2025-0423">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="text" id="invoiceDate" value="18 May 2026">
+                </div>
+                <div class="form-group">
+                    <label>Due Date</label>
+                    <input type="text" id="dueDate" value="25 May 2026">
+                </div>
+                <div class="form-group">
+                    <label>Bill To (Name, Company, Address)</label>
+                    <textarea id="billTo" rows="3">Mr. Chidi Okonkwo, Okonkwo Homes Ltd, Plot 24 Independence Layout Enugu</textarea>
+                </div>
+            </div>
+
+            <div id="quotationFields" style="display:none;">
+                <div class="form-group">
+                    <label>Quotation Title</label>
+                    <textarea id="quotationTitle" rows="2">QUOTATION FOR 8KW ITEL HYBRID INVERTER WITH 32KWH 48V LITHIUM BATTERY SYSTEM</textarea>
+                </div>
+            </div>
+
+            <div class="items-section">
+                <div class="items-header">
+                    <label>📋 Items</label>
+                    <button class="btn btn-add" id="addItemBtn">+ Add Item</button>
+                </div>
+                <div id="itemsContainer"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Notes / Terms</label>
+                <textarea id="notes" rows="2">Payment via bank transfer within 7 days. Warranty: 2 years on equipment.</textarea>
+            </div>
+
+            <div class="export-buttons">
+                <button class="btn-export" id="downloadImageBtn">📸 Save Image</button>
+                <button class="btn-export" id="printBtn">🖨️ Print / PDF</button>
+            </div>
+        </div>
+
+        <!-- LIVE PREVIEW PANEL -->
+        <div class="preview-wrapper">
+            <div class="preview-header-bar">
+                <span>📄 Live Preview</span>
+                <div class="live-indicator">
+                    <div class="live-dot"></div> Auto-updating
+                </div>
+            </div>
+            <div class="preview-panel" id="previewPanel">
+                <!-- Preview content renders here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            let currentMode = 'invoice';
+            let items = [
+                { desc: '8KW Hybrid Inverter Installation', qty: 1, price: 820305 },
+                { desc: '32KWH Lithium Battery System', qty: 1, price: 5016000 },
+                { desc: 'Electrical Wiring & Protection', qty: 1, price: 350000 },
+                { desc: 'Professional Service Charge', qty: 1, price: 800000 }
+            ];
+
+            const quotationItems = [
+                { desc: '8KW ITEL HYBRID INVERTER', qty: 1, price: 820305 },
+                { desc: '16KWH ITEL LITHIUM BATTERY', qty: 2, price: 2508000 },
+                { desc: 'AC COMBINER (WITH PROTECTIVE DEVICES)', qty: 1, price: 132000 },
+                { desc: 'DC COMBINER (WITH PROTECTIVE DEVICES)', qty: 1, price: 85000 },
+                { desc: '100AMPS BREAKER CHANGE OVER', qty: 1, price: 35000 },
+                { desc: '10MM AC CABLES', qty: 45, price: 3800 },
+                { desc: 'INSTALLATION KITS', qty: 1, price: 200000 },
+                { desc: 'LOGISTICS', qty: 1, price: 150000 },
+                { desc: 'PROFESSIONAL SERVICE', qty: 1, price: 800000 }
+            ];
+
+            function init() {
+                renderItems();
+                updatePreview();
+
+                // Mode switch
+                document.getElementById('modeSwitch').addEventListener('click', (e) => {
+                    if (e.target.classList.contains('mode-btn')) {
+                        currentMode = e.target.dataset.mode;
+                        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove(
+                            'active'));
+                        e.target.classList.add('active');
+
+                        document.getElementById('invoiceFields').style.display = currentMode === 'invoice' ?
+                            'block' : 'none';
+                        document.getElementById('quotationFields').style.display = currentMode ===
+                            'quotation' ? 'block' : 'none';
+
+                        items = currentMode === 'quotation' ? JSON.parse(JSON.stringify(quotationItems)) : [
+                            { desc: '8KW Hybrid Inverter Installation', qty: 1, price: 820305 },
+                            { desc: '32KWH Lithium Battery System', qty: 1, price: 5016000 },
+                            { desc: 'Electrical Wiring & Protection', qty: 1, price: 350000 },
+                            { desc: 'Professional Service Charge', qty: 1, price: 800000 }
+                        ];
+                        renderItems();
+                        updatePreview();
+                    }
+                });
+
+                // Add item
+                document.getElementById('addItemBtn').addEventListener('click', () => {
+                    items.push({ desc: 'New Item', qty: 1, price: 0 });
+                    renderItems();
+                    updatePreview();
+                });
+
+                // Live input listeners
+                const allInputs = document.querySelectorAll('#generatorForm input, #generatorForm textarea');
+                allInputs.forEach(input => {
+                    input.addEventListener('input', updatePreview);
+                });
+
+                // Export buttons
+                document.getElementById('printBtn').addEventListener('click', printDocument);
+                document.getElementById('downloadImageBtn').addEventListener('click', downloadAsImage);
+            }
+
+            function renderItems() {
+                const container = document.getElementById('itemsContainer');
+                container.innerHTML = items.map((item, index) => `
+                    <div class="item-row">
+                        <input type="text" class="item-desc" value="${escapeHtml(item.desc)}" placeholder="Description" data-index="${index}" data-field="desc">
+                        <input type="number" class="item-qty" value="${item.qty}" placeholder="Qty" data-index="${index}" data-field="qty" min="1">
+                        <input type="number" class="item-price" value="${item.price}" placeholder="Price" data-index="${index}" data-field="price" step="0.01" min="0">
+                        <button class="btn btn-remove" data-index="${index}">✕</button>
+                    </div>
+                `).join('');
+
+                // Item input listeners
+                container.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('input', (e) => {
+                        const index = parseInt(e.target.dataset.index);
+                        const field = e.target.dataset.field;
+                        const value = field === 'desc' ? e.target.value : Math.max(0, Number(e.target
+                            .value) || 0);
+                        if (items[index]) {
+                            items[index][field] = value;
+                        }
+                        updatePreview();
+                    });
+                });
+
+                // Remove buttons
+                container.querySelectorAll('.btn-remove').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const index = parseInt(e.target.dataset.index);
+                        if (items.length > 1) {
+                            items.splice(index, 1);
+                            renderItems();
+                            updatePreview();
+                        } else {
+                            alert('Cannot remove the last item');
+                        }
+                    });
+                });
+            }
+
+            function getFormData() {
+                return {
+                    company: {
+                        name: document.getElementById('companyName').value || 'Company Name',
+                        address: document.getElementById('companyAddress').value || '',
+                        contact: document.getElementById('companyContact').value || '',
+                    },
+                    invoice: {
+                        number: document.getElementById('invoiceNumber')?.value || '',
+                        date: document.getElementById('invoiceDate')?.value || '',
+                        dueDate: document.getElementById('dueDate')?.value || '',
+                        billTo: document.getElementById('billTo')?.value || '',
+                    },
+                    quotation: {
+                        title: document.getElementById('quotationTitle')?.value || '',
+                    },
+                    notes: document.getElementById('notes').value || '',
+                    items: [...items]
+                };
+            }
+
+            function formatCurrency(val) {
+                return '₦' + Number(val).toLocaleString('en-NG', { minimumFractionDigits: 2 });
+            }
+
+            function escapeHtml(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            function updatePreview() {
+                const data = getFormData();
+                const preview = document.getElementById('previewPanel');
+
+                if (currentMode === 'invoice') {
+                    const subtotal = data.items.reduce((sum, i) => sum + (i.qty * i.price), 0);
+                    const tax = subtotal * 0.075;
+                    const total = subtotal + tax;
+                    const billParts = data.invoice.billTo.split(',').map(s => s.trim()).filter(s => s);
+
+                    preview.innerHTML = `
+                        <div class="doc-top-bar"></div>
+                        <div class="doc-header">
+                            <div class="logo-area">
+                                <div class="logo-icon">⚡</div>
+                                <div class="company-info">
+                                    <h3>${escapeHtml(data.company.name)}</h3>
+                                    <p>${escapeHtml(data.company.address)}</p>
+                                    <p>📞 ${escapeHtml(data.company.contact)}</p>
+                                </div>
+                            </div>
+                            <div class="doc-meta">
+                                <h2>INVOICE</h2>
+                                ${data.invoice.number ? `<p><strong>Invoice #:</strong> ${escapeHtml(data.invoice.number)}</p>` : ''}
+                                ${data.invoice.date ? `<p><strong>Date:</strong> ${escapeHtml(data.invoice.date)}</p>` : ''}
+                                ${data.invoice.dueDate ? `<p><strong>Due Date:</strong> ${escapeHtml(data.invoice.dueDate)}</p>` : ''}
+                            </div>
+                        </div>
+                        <div class="doc-section">
+                            <div class="billing-grid">
+                                <div>
+                                    <strong>Bill To:</strong><br>
+                                    ${billParts.length > 0 ? billParts.map(p => escapeHtml(p)).join('<br>') : 'Client details'}
+                                </div>
+                                <div>
+                                    <strong>From:</strong><br>
+                                    ${escapeHtml(data.company.name)}<br>
+                                    ${escapeHtml(data.company.address)}<br>
+                                    ${escapeHtml(data.company.contact)}
+                                </div>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Amount</th></tr>
+                                </thead>
+                                <tbody>
+                                    ${data.items.map(i => `
+                                        <tr>
+                                            <td>${escapeHtml(i.desc) || 'Item'}</td>
+                                            <td>${i.qty}</td>
+                                            <td>${formatCurrency(i.price)}</td>
+                                            <td>${formatCurrency(i.qty * i.price)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                            <div class="total-box">
+                                <div><span>Subtotal</span><span>${formatCurrency(subtotal)}</span></div>
+                                <div><span>VAT (7.5%)</span><span>${formatCurrency(tax)}</span></div>
+                                <div><span>TOTAL DUE</span><span>${formatCurrency(total)}</span></div>
+                            </div>
+                            ${data.notes ? `<div class="notes-section"><strong>📝 Notes:</strong> ${escapeHtml(data.notes)}</div>` : ''}
+                            <div class="signature-area">
+                                <div class="stamp">⚡<br>LIGHTUP</div>
+                            </div>
+                        </div>
+                        <div class="doc-bottom-bar"></div>
+                    `;
+                } else {
+                    const grandTotal = data.items.reduce((sum, i) => sum + (i.qty * i.price), 0);
+                    preview.innerHTML = `
+                        <div class="doc-top-bar"></div>
+                        <div class="quotation-title-section">
+                            <h2>${escapeHtml(data.quotation.title) || 'QUOTATION'}</h2>
+                            <p><strong>${escapeHtml(data.company.name)}</strong><br>Professional Solar & Inverter Installation Services</p>
+                            <p style="font-size:12px; color:#555;">${escapeHtml(data.company.address)} | ${escapeHtml(data.company.contact)}</p>
+                        </div>
+                        <div class="doc-section">
+                            <table>
+                                <thead>
+                                    <tr><th>S/N</th><th>Equipment Description</th><th>Qty</th><th>Unit Price (₦)</th><th>Amount</th></tr>
+                                </thead>
+                                <tbody>
+                                    ${data.items.map((i, idx) => `
+                                        <tr>
+                                            <td>${idx + 1}</td>
+                                            <td>${escapeHtml(i.desc) || 'Item'}</td>
+                                            <td>${i.qty}</td>
+                                            <td>${formatCurrency(i.price)}</td>
+                                            <td>${formatCurrency(i.qty * i.price)}</td>
+                                        </tr>
+                                    `).join('')}
+                                    <tr style="background:#1d3c4f; color:white; font-weight:bold;">
+                                        <td colspan="4">GRAND TOTAL</td>
+                                        <td>${formatCurrency(grandTotal)}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            ${data.notes ? `<div class="notes-section"><strong>📝 Notes:</strong> ${escapeHtml(data.notes)}</div>` : ''}
+                            <div class="signature-area">
+                                <div class="stamp">⚡<br>LIGHTUP</div>
+                            </div>
+                        </div>
+                        <div class="doc-bottom-bar"></div>
+                    `;
+                }
+            }
+
+            function printDocument() {
+                const content = document.getElementById('previewPanel').innerHTML;
+                const win = window.open('', '_blank', 'width=900,height=700');
+                win.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Lightup Electrical - ${currentMode === 'invoice' ? 'Invoice' : 'Quotation'}</title>
+                        <style>
+                            body { font-family: 'Segoe UI', Arial, sans-serif; margin: 15px; color: #222; }
+                            .doc-top-bar, .doc-bottom-bar { height: 8px; background: #2cb9d6; }
+                            table { width: 100%; border-collapse: collapse; font-size: 12px; }
+                            th { background: #2cb9d6; color: white; padding: 8px 10px; text-align: left; }
+                            td { padding: 7px 10px; border-bottom: 1px solid #ddd; }
+                            .total-box { width: 280px; margin-left: auto; border: 1px solid #ccc; margin-top: 12px; }
+                            .total-box div { display: flex; justify-content: space-between; padding: 9px 14px; border-bottom: 1px solid #eee; }
+                            .total-box div:last-child { background: #2cb9d6; color: white; font-weight: bold; }
+                            .stamp { width: 100px; height: 100px; border: 3px solid #c44536; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #c44536; font-weight: bold; transform: rotate(-10deg); }
+                            @media print { body { margin: 0; } }
+                        </style>
+                    </head>
+                    <body>${content}</body>
+                    </html>
+                `);
+                win.document.close();
+                win.focus();
+                setTimeout(() => win.print(), 300);
+            }
+
+            async function downloadAsImage() {
+                const preview = document.getElementById('previewPanel');
+                try {
+                    const canvas = await html2canvas(preview, {
+                        scale: 2,
+                        backgroundColor: '#ffffff',
+                        logging: false
+                    });
+                    const link = document.createElement('a');
+                    link.download = `lightup-${currentMode}-${new Date().toISOString().slice(0,10)}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                } catch (error) {
+                    alert('Error generating image. Please try again.');
+                    console.error(error);
+                }
+            }
+
+            // Initialize the app
+            init();
+        })();
+    </script>
+</body>
+</html>

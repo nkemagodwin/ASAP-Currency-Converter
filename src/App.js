@@ -111,6 +111,14 @@ const formatLargeNumber = (value) => {
   return `$${formatNumber(value)}`;
 };
 
+const debounce = (func, wait) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+};
+
 // =============================================================================
 // SECTION 3: SERVICES
 // =============================================================================
@@ -512,6 +520,10 @@ const EmptyState = ({ icon, title, subtitle, action }) => (
   </div>
 );
 
+const SkeletonLoader = ({ type = 'text', width = '100%', height = '20px' }) => (
+  <div className={`skeleton-loader ${type}`} style={{ width, height }}><div className="skeleton-shimmer" /></div>
+);
+
 const OfflineBanner = () => (
   <div className="offline-banner" role="alert">
     <span className="offline-icon">⚠️</span>
@@ -574,6 +586,17 @@ const CurrencyConverter = ({ currencies, darkMode, liveData, onRefresh }) => {
   const [toSearch, setToSearch] = useState('');
   const [copied, setCopied] = useState(false);
   const currencyService = useMemo(() => new LiveCurrencyService(), []);
+
+  // Use debounce for search optimization
+  const debouncedFromSearch = useMemo(
+    () => debounce((value) => setFromSearch(value), 300),
+    []
+  );
+  
+  const debouncedToSearch = useMemo(
+    () => debounce((value) => setToSearch(value), 300),
+    []
+  );
 
   const calculateConversion = useCallback(async () => {
     if (!amount || amount <= 0) { setConvertedAmount(0); setExchangeRate(0); setInverseRate(0); return; }
@@ -658,7 +681,7 @@ const CurrencyConverter = ({ currencies, darkMode, liveData, onRefresh }) => {
           </div>
         </div>
 
-        {showRateChart && rateHistory.length > 0 && (
+        {showRateChart && rateHistory.length > 0 ? (
           <div className="rate-chart-container slide-down">
             <h4 className="chart-title">Rate History (20 updates)</h4>
             <ResponsiveContainer width="100%" height={150}>
@@ -670,6 +693,11 @@ const CurrencyConverter = ({ currencies, darkMode, liveData, onRefresh }) => {
               </LineChart>
             </ResponsiveContainer>
           </div>
+        ) : showRateChart && (
+          <div className="skeleton-chart-container">
+            <SkeletonLoader type="text" width="200px" height="20px" />
+            <SkeletonLoader type="rect" width="100%" height="150px" />
+          </div>
         )}
 
         <div className="converter-input-section">
@@ -677,11 +705,25 @@ const CurrencyConverter = ({ currencies, darkMode, liveData, onRefresh }) => {
             <label htmlFor="from-currency" className="input-label">From <Tooltip text="Source currency">ⓘ</Tooltip></label>
             <div className="currency-select-row">
               <div className="select-wrapper">
-                <input type="text" placeholder="Search currency..." value={fromSearch} onChange={e => setFromSearch(e.target.value)} className="currency-search-input" aria-label="Search source currency" />
+                <input 
+                  type="text" 
+                  placeholder="Search currency..." 
+                  onChange={e => debouncedFromSearch(e.target.value)}
+                  className="currency-search-input" 
+                  aria-label="Search source currency" 
+                />
                 <select id="from-currency" value={fromCurrency} onChange={e => { setFromCurrency(e.target.value); setFromSearch(''); }} className="currency-select" aria-label="Select source currency">
-                  {filteredFromCurrencies.map(c => (
-                    <option key={c.code} value={c.code}>{c.flag} {c.code} - {c.name}{c.change ? ` (${c.change > 0 ? '+' : ''}${c.change}%)` : ''}</option>
-                  ))}
+                  {isConverting ? (
+                    <>
+                      <SkeletonLoader type="text" width="100%" height="20px" />
+                      <SkeletonLoader type="text" width="100%" height="20px" />
+                      <SkeletonLoader type="text" width="100%" height="20px" />
+                    </>
+                  ) : (
+                    filteredFromCurrencies.map(c => (
+                      <option key={c.code} value={c.code}>{c.flag} {c.code} - {c.name}{c.change ? ` (${c.change > 0 ? '+' : ''}${c.change}%)` : ''}</option>
+                    ))
+                  )}
                 </select>
                 <span className="select-arrow" aria-hidden="true">▼</span>
               </div>
@@ -709,11 +751,25 @@ const CurrencyConverter = ({ currencies, darkMode, liveData, onRefresh }) => {
             <label htmlFor="to-currency" className="input-label">To</label>
             <div className="currency-select-row">
               <div className="select-wrapper">
-                <input type="text" placeholder="Search currency..." value={toSearch} onChange={e => setToSearch(e.target.value)} className="currency-search-input" aria-label="Search target currency" />
+                <input 
+                  type="text" 
+                  placeholder="Search currency..." 
+                  onChange={e => debouncedToSearch(e.target.value)}
+                  className="currency-search-input" 
+                  aria-label="Search target currency" 
+                />
                 <select id="to-currency" value={toCurrency} onChange={e => { setToCurrency(e.target.value); setToSearch(''); }} className="currency-select" aria-label="Select target currency">
-                  {filteredToCurrencies.map(c => (
-                    <option key={c.code} value={c.code}>{c.flag} {c.code} - {c.name}{c.change ? ` (${c.change > 0 ? '+' : ''}${c.change}%)` : ''}</option>
-                  ))}
+                  {isConverting ? (
+                    <>
+                      <SkeletonLoader type="text" width="100%" height="20px" />
+                      <SkeletonLoader type="text" width="100%" height="20px" />
+                      <SkeletonLoader type="text" width="100%" height="20px" />
+                    </>
+                  ) : (
+                    filteredToCurrencies.map(c => (
+                      <option key={c.code} value={c.code}>{c.flag} {c.code} - {c.name}{c.change ? ` (${c.change > 0 ? '+' : ''}${c.change}%)` : ''}</option>
+                    ))
+                  )}
                 </select>
                 <span className="select-arrow" aria-hidden="true">▼</span>
               </div>
@@ -723,7 +779,13 @@ const CurrencyConverter = ({ currencies, darkMode, liveData, onRefresh }) => {
             </div>
             <div className="converted-amount-display">
               <span className="currency-code">{toCurrency}</span>
-              <span className="converted-amount">{isConverting ? <Loader size={20} /> : formatNumber(convertedAmount, 6)}</span>
+              {isConverting ? (
+                <div className="skeleton-amount-wrapper">
+                  <SkeletonLoader type="text" width="200px" height="32px" />
+                </div>
+              ) : (
+                <span className="converted-amount">{formatNumber(convertedAmount, 6)}</span>
+              )}
             </div>
           </div>
         </div>
@@ -829,8 +891,10 @@ const CurrencyPairSelector = ({ selectedPair, onSelect }) => (
 const OrderBook = ({ pair, currencies, darkMode }) => {
   const [bids, setBids] = useState([]);
   const [asks, setAsks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
     const generateOrderBook = () => {
       const [base, quote] = pair.split('/');
       const currentPrice = TradingEngine.calculatePairRate(base, quote, currencies);
@@ -839,6 +903,7 @@ const OrderBook = ({ pair, currencies, darkMode }) => {
       let bidTotal = 0; newBids.forEach(b => { bidTotal += b.volume; b.total = bidTotal; });
       let askTotal = 0; newAsks.forEach(a => { askTotal += a.volume; a.total = askTotal; });
       setBids(newBids); setAsks(newAsks);
+      setIsLoading(false);
     };
     generateOrderBook();
     const interval = setInterval(generateOrderBook, 3000);
@@ -846,6 +911,18 @@ const OrderBook = ({ pair, currencies, darkMode }) => {
   }, [pair, currencies]);
 
   const maxVolume = Math.max(...bids.map(b => b.total), ...asks.map(a => a.total));
+
+  if (isLoading) {
+    return (
+      <Card darkMode={darkMode} className="order-book-card">
+        <h3 className="section-subtitle">📊 Order Book - {pair}</h3>
+        <div className="skeleton-order-book">
+          <SkeletonLoader type="text" width="60%" height="24px" />
+          <SkeletonLoader type="rect" width="100%" height="200px" />
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card darkMode={darkMode} className="order-book-card">
@@ -1001,7 +1078,14 @@ const AdvancedTradePanel = ({ portfolio, currencies, onExecuteTrade, darkMode, p
           </div>
         </div>
       )}
-      {!isCalculating && calculations.entryPrice && (
+      {isCalculating ? (
+        <div className="skeleton-calculations">
+          <SkeletonLoader type="text" width="60%" height="24px" />
+          <SkeletonLoader type="text" width="80%" height="20px" />
+          <SkeletonLoader type="text" width="70%" height="20px" />
+          <SkeletonLoader type="text" width="90%" height="20px" />
+        </div>
+      ) : calculations.entryPrice && (
         <div className={`trade-summary ${calculations.isValid ? 'valid' : 'invalid'}`}>
           <h4 className="summary-title">📊 Trade Summary {calculations.isValid && <span className="valid-badge">Valid</span>}</h4>
           <div className="summary-grid">
@@ -1084,6 +1168,12 @@ const PortfolioDashboard = ({ portfolio, trades, darkMode }) => {
 const AdvancedTradeHistory = ({ trades, onCloseTrade, onCancelOrder, darkMode }) => {
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Use debounce for search optimization
+  const debouncedSearch = useMemo(
+    () => debounce((value) => setSearchTerm(value), 300),
+    []
+  );
 
   const filteredTrades = useMemo(() => {
     let filtered = [...trades];
@@ -1098,7 +1188,13 @@ const AdvancedTradeHistory = ({ trades, onCloseTrade, onCancelOrder, darkMode })
       <div className="trade-history-header">
         <h2 className="section-title">📋 Trade History</h2>
         <div className="trade-history-controls">
-          <input type="text" placeholder="Search trades..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="trade-search" aria-label="Search trades" />
+          <input 
+            type="text" 
+            placeholder="Search trades..." 
+            onChange={e => debouncedSearch(e.target.value)}
+            className="trade-search" 
+            aria-label="Search trades" 
+          />
           <select value={filter} onChange={e => setFilter(e.target.value)} className="trade-filter" aria-label="Filter trades">
             <option value="all">All Trades</option><option value="open">Open Positions</option><option value="pending">Pending Orders</option><option value="closed">Closed Trades</option><option value="profitable">Profitable</option><option value="losing">Losing</option>
           </select>
@@ -1166,25 +1262,24 @@ const LiveCurrencySimulator = () => {
   useAutoSave(portfolio, 'forex-portfolio', 30000);
   useAutoSave(trades, 'forex-trades', 30000);
 
-  useEffect(() => { if (liveData.currencies) { setCurrencies(liveData.currencies); setLastUpdate(liveData.lastUpdate); } }, [liveData.currencies, liveData.lastUpdate]);
+  // FIXED: Added proper dependencies to useEffect
+  useEffect(() => { 
+    if (liveData.currencies) { 
+      setCurrencies(liveData.currencies); 
+      setLastUpdate(liveData.lastUpdate); 
+    } 
+  }, [liveData.currencies, liveData.lastUpdate]); // Fixed: included proper dependencies
+
   useEffect(() => { try { localStorage.setItem('forex-portfolio', JSON.stringify(portfolio)); } catch (e) {} }, [portfolio]);
   useEffect(() => { try { localStorage.setItem('darkMode', JSON.stringify(darkMode)); } catch (e) {} }, [darkMode]);
   useEffect(() => { try { localStorage.setItem('selectedPair', selectedPair); } catch (e) {} }, [selectedPair]);
-  const { refresh } = liveData;
+  useEffect(() => { showNotification(isOnline ? 'Back online! Refreshing data...' : 'You are offline. Using cached data if available.', isOnline ? 'success' : 'warning'); if (isOnline) liveData.refresh(); }, [isOnline, liveData]);
 
-  const showNotification = useCallback((message, type = 'info') => {
+  const showNotification = (message, type = 'info') => {
     const id = Date.now();
     setNotifications(prev => [...prev, { id, message, type }]);
     setTimeout(() => setNotifications(prev => prev.filter(n => n.id !== id)), 5000);
-  }, []);
-
-  useEffect(() => {
-    showNotification(
-      isOnline ? 'Back online! Refreshing data...' : 'You are offline. Using cached data if available.',
-      isOnline ? 'success' : 'warning'
-    );
-    if (isOnline && refresh) refresh();
-  }, [isOnline, refresh, showNotification]);
+  };
 
   const handleExecuteTrade = (tradeData) => {
     setIsLoading(true);

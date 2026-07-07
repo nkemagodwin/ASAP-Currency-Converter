@@ -111,8 +111,6 @@ const formatLargeNumber = (value) => {
   return `$${formatNumber(value)}`;
 };
 
-// Removed unused debounce function
-
 // =============================================================================
 // SECTION 3: SERVICES
 // =============================================================================
@@ -513,8 +511,6 @@ const EmptyState = ({ icon, title, subtitle, action }) => (
     {action}
   </div>
 );
-
-// Removed unused SkeletonLoader component
 
 const OfflineBanner = () => (
   <div className="offline-banner" role="alert">
@@ -1181,14 +1177,13 @@ const LiveCurrencySimulator = () => {
     setTimeout(() => setNotifications(prev => prev.filter(n => n.id !== id)), 5000);
   }, []);
 
-  // Ref for stable access to liveData in effect
   const liveDataRef = useRef(liveData);
   liveDataRef.current = liveData;
 
   useEffect(() => {
     showNotification(isOnline ? 'Back online! Refreshing data...' : 'You are offline. Using cached data if available.', isOnline ? 'success' : 'warning');
     if (isOnline) liveDataRef.current.refresh();
-  }, [isOnline, showNotification]); // dependency array now satisfies eslint
+  }, [isOnline, showNotification]);
 
   const handleExecuteTrade = (tradeData) => {
     setIsLoading(true);

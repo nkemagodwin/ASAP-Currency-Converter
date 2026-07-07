@@ -111,14 +111,6 @@ const formatLargeNumber = (value) => {
   return `$${formatNumber(value)}`;
 };
 
-const debounce = (func, wait) => {
-  let timeout;
-  return (...args) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-};
-
 // =============================================================================
 // SECTION 3: SERVICES
 // =============================================================================
@@ -518,10 +510,6 @@ const EmptyState = ({ icon, title, subtitle, action }) => (
     <p className="empty-subtitle">{subtitle}</p>
     {action}
   </div>
-);
-
-const SkeletonLoader = ({ type = 'text', width = '100%', height = '20px' }) => (
-  <div className={`skeleton-loader ${type}`} style={{ width, height }}><div className="skeleton-shimmer" /></div>
 );
 
 const OfflineBanner = () => (
@@ -1182,13 +1170,21 @@ const LiveCurrencySimulator = () => {
   useEffect(() => { try { localStorage.setItem('forex-portfolio', JSON.stringify(portfolio)); } catch (e) {} }, [portfolio]);
   useEffect(() => { try { localStorage.setItem('darkMode', JSON.stringify(darkMode)); } catch (e) {} }, [darkMode]);
   useEffect(() => { try { localStorage.setItem('selectedPair', selectedPair); } catch (e) {} }, [selectedPair]);
-  useEffect(() => { showNotification(isOnline ? 'Back online! Refreshing data...' : 'You are offline. Using cached data if available.', isOnline ? 'success' : 'warning'); if (isOnline) liveData.refresh(); }, [isOnline]);
+  const { refresh } = liveData;
 
-  const showNotification = (message, type = 'info') => {
+  const showNotification = useCallback((message, type = 'info') => {
     const id = Date.now();
     setNotifications(prev => [...prev, { id, message, type }]);
     setTimeout(() => setNotifications(prev => prev.filter(n => n.id !== id)), 5000);
-  };
+  }, []);
+
+  useEffect(() => {
+    showNotification(
+      isOnline ? 'Back online! Refreshing data...' : 'You are offline. Using cached data if available.',
+      isOnline ? 'success' : 'warning'
+    );
+    if (isOnline && refresh) refresh();
+  }, [isOnline, refresh, showNotification]);
 
   const handleExecuteTrade = (tradeData) => {
     setIsLoading(true);

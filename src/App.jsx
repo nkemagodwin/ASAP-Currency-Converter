@@ -1,17 +1,17 @@
 /**
  * ASAP~FUNDS - Professional Forex Trading Platform
- * @version 2.1.0 (Improved)
+ * @version 2.1.0 (Fixed & Improved)
  * @date 2026-05-15
  * @author Royzeenet
  * @description Advanced forex trading platform with live currency conversion,
  *              risk management, portfolio tracking, and multiple order types.
- *              Enhanced with performance optimizations and bug fixes.
+ *              Fixed bugs and improved stability without removing features.
  */
 
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import './App.css';
 import { LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
-import PropTypes from 'prop-types';
+import './PaymentForms.js'; // Keep as originally present
 
 // =============================================================================
 // SECTION 1: CONSTANTS & CONFIGURATIONS
@@ -37,7 +37,7 @@ const CURRENCIES = [
   { code: 'ZAR', name: 'South African Rand', favorite: false, color: '#F97316', trend: 'down', volatility: 0.0045, flag: '🇿🇦' },
 ];
 
-// Static fallback rates (USD base) used before live data loads
+// Static fallback rates to ensure UI is populated before live data
 const STATIC_RATES = {
   USD: 1,
   EUR: 0.92,
@@ -151,7 +151,7 @@ class LiveCurrencyService {
     this.cache = new Map();
     this.pendingRequests = new Map();
     this.rateHistory = new Map();
-    // Pre-populate history with static rates for better initial experience
+    // Pre-populate history with static rates for smoother initial experience
     this._seedHistory();
   }
 
@@ -228,7 +228,7 @@ class LiveCurrencyService {
         errors.push(`${api.source} failed: ${error.message}`);
       }
     }
-    // Fallback to static rates if all APIs fail
+    // Fallback to static rates instead of throwing error
     console.warn('All APIs failed, using static rates', errors.join('; '));
     return { base: baseCurrency, rates: { ...STATIC_RATES }, timestamp: Date.now(), source: 'static-fallback' };
   }
@@ -246,11 +246,11 @@ class LiveCurrencyService {
 
   getRateHistory(baseCurrency, targetCurrency, points = 50) {
     const key = `${baseCurrency}-${targetCurrency}`;
-    // Try direct history
+    // Return existing history if available
     if (this.rateHistory.has(key)) {
       return this.rateHistory.get(key).slice(-points);
     }
-    // Fallback: generate synthetic history from current rates
+    // Otherwise generate synthetic history from current rate (or static)
     const base = this.cache.get(`rates-${baseCurrency}`)?.data?.rates?.[targetCurrency] || STATIC_RATES[targetCurrency];
     if (base) {
       const now = Date.now();
@@ -265,7 +265,7 @@ class LiveCurrencyService {
 
   async convert(amount, from, to) {
     if (from === to) return { amount, rate: 1, timestamp: Date.now(), source: 'direct' };
-    // Try to get from cache first (avoid extra API call if already loaded)
+    // Try to use cached rates to avoid extra API call
     let data = this.cache.get(`rates-${from}`)?.data;
     if (!data) {
       data = await this.getLiveRates(from);
@@ -358,6 +358,7 @@ class TradingEngine {
 // =============================================================================
 
 const useLiveCurrencyData = () => {
+  // Initialize with static rates so UI is populated immediately
   const [currencies, setCurrencies] = useState(() =>
     CURRENCIES.map(c => ({
       ...c,
@@ -380,7 +381,10 @@ const useLiveCurrencyData = () => {
     setError(null);
     try {
       const data = await currencyService.getLiveRates('USD');
-      setCurrencies(prev => prev.map(currency => {
+      
+      // Compute updated currencies and rate history separately to avoid side effects in setState
+      let newRateHistory = {};
+      const updatedCurrencies = currencies.map(currency => {
         if (currency.code === 'USD') {
           return { ...currency, rate: 1, previousRate: currency.rate || 1, lastUpdate: data.timestamp, apiSource: data.source };
         }
@@ -389,21 +393,22 @@ const useLiveCurrencyData = () => {
         const previousRate = currency.rate || 1;
         const changePercent = ((liveRate - previousRate) / previousRate) * 100;
 
-        // Update rate history (but don't duplicate if same timestamp)
-        setRateHistory(prev => {
-          const existing = prev[currency.code] || [];
-          const lastEntry = existing[existing.length - 1];
-          const newEntry = {
-            time: new Date(data.timestamp).toLocaleTimeString(),
-            rate: liveRate,
-            timestamp: data.timestamp,
-            change: changePercent
-          };
-          const updated = lastEntry && lastEntry.timestamp === data.timestamp
-            ? [...existing.slice(0, -1), newEntry]
-            : [...existing, newEntry];
-          return { ...prev, [currency.code]: updated.slice(-100) };
-        });
+        // Build history entry
+        const historyKey = currency.code;
+        const existingHistory = rateHistory[historyKey] || [];
+        const lastEntry = existingHistory[existingHistory.length - 1];
+        const newEntry = {
+          time: new Date(data.timestamp).toLocaleTimeString(),
+          rate: liveRate,
+          timestamp: data.timestamp,
+          change: changePercent
+        };
+        newRateHistory[historyKey] = lastEntry && lastEntry.timestamp === data.timestamp
+          ? [...existingHistory.slice(0, -1), newEntry]
+          : [...existingHistory, newEntry];
+        if (newRateHistory[historyKey].length > 100) {
+          newRateHistory[historyKey] = newRateHistory[historyKey].slice(-100);
+        }
 
         return {
           ...currency,
@@ -414,7 +419,10 @@ const useLiveCurrencyData = () => {
           lastUpdate: data.timestamp,
           apiSource: data.source
         };
-      }));
+      });
+
+      setCurrencies(updatedCurrencies);
+      setRateHistory(prev => ({ ...prev, ...newRateHistory }));
       setApiSource(data.source);
       setLastUpdate(new Date(data.timestamp));
     } catch (err) {
@@ -423,7 +431,7 @@ const useLiveCurrencyData = () => {
     } finally {
       setLoading(false);
     }
-  }, [currencyService]);
+  }, [currencyService, currencies, rateHistory]); // Added dependencies to avoid stale closures
 
   useEffect(() => {
     updateCurrencies();
@@ -520,24 +528,16 @@ const Notification = ({ notifications, removeNotification }) => (
           <span className="notification-message">{message}</span>
         </div>
         <button onClick={() => removeNotification(id)} className="notification-close-button" aria-label="Close notification">×</button>
+        {/* Progress bar for auto-dismiss (CSS animation can be added in App.css) */}
         <div className="notification-progress" />
       </div>
     ))}
   </div>
 );
 
-Notification.propTypes = {
-  notifications: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    message: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired
-  })).isRequired,
-  removeNotification: PropTypes.func.isRequired
-};
-
 const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText = 'Confirm', cancelText = 'Cancel', type = 'warning' }) => {
   const modalRef = useRef(null);
-
+  
   useEffect(() => {
     if (!isOpen) return;
     const handleEscape = (e) => { if (e.key === 'Escape') onClose(); };
@@ -564,17 +564,6 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText 
   );
 };
 
-ConfirmModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  message: PropTypes.string.isRequired,
-  confirmText: PropTypes.string,
-  cancelText: PropTypes.string,
-  type: PropTypes.string
-};
-
 const Tooltip = ({ children, text, position = 'top' }) => {
   const [show, setShow] = useState(false);
   const [coords, setCoords] = useState({});
@@ -587,44 +576,21 @@ const Tooltip = ({ children, text, position = 'top' }) => {
   };
 
   return (
-    <span
-      className="tooltip-container"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={() => setShow(false)}
-      onFocus={handleMouseEnter}
-      onBlur={() => setShow(false)}
-      ref={tooltipRef}
-    >
+    <span className="tooltip-container" onMouseEnter={handleMouseEnter} onMouseLeave={() => setShow(false)} onFocus={handleMouseEnter} onBlur={() => setShow(false)} ref={tooltipRef}>
       {children}
       {show && (
-        <span
-          className={`tooltip-text ${position}`}
-          style={{
-            top: position === 'top' ? coords.top - 30 : position === 'bottom' ? coords.top + coords.height + 10 : coords.top + coords.height / 2,
-            left: position === 'left' ? coords.left - 10 : position === 'right' ? coords.left + coords.width + 10 : coords.left + coords.width / 2
-          }}
-        >
-          {text}
-        </span>
+        <span className={`tooltip-text ${position}`} style={{
+          top: position === 'top' ? coords.top - 30 : position === 'bottom' ? coords.top + coords.height + 10 : coords.top + coords.height/2,
+          left: position === 'left' ? coords.left - 10 : position === 'right' ? coords.left + coords.width + 10 : coords.left + coords.width/2
+        }}>{text}</span>
       )}
     </span>
   );
 };
 
-Tooltip.propTypes = {
-  children: PropTypes.node.isRequired,
-  text: PropTypes.string.isRequired,
-  position: PropTypes.string
-};
-
 const Loader = ({ size = 20, color = '#667eea' }) => (
   <div className="loader" style={{ width: size, height: size, borderColor: `${color}20`, borderTopColor: color }} aria-label="Loading" />
 );
-
-Loader.propTypes = {
-  size: PropTypes.number,
-  color: PropTypes.string
-};
 
 const LoadingOverlay = ({ isLoading, progress = 0 }) => {
   if (!isLoading) return null;
@@ -639,24 +605,9 @@ const LoadingOverlay = ({ isLoading, progress = 0 }) => {
   );
 };
 
-LoadingOverlay.propTypes = {
-  isLoading: PropTypes.bool.isRequired,
-  progress: PropTypes.number
-};
-
 const Card = ({ children, darkMode, className = '', onClick, hoverable = false }) => (
-  <div className={`card ${darkMode ? 'card-dark' : 'card-light'} ${hoverable ? 'hoverable' : ''} ${className}`} onClick={onClick}>
-    {children}
-  </div>
+  <div className={`card ${darkMode ? 'card-dark' : 'card-light'} ${hoverable ? 'hoverable' : ''} ${className}`} onClick={onClick}>{children}</div>
 );
-
-Card.propTypes = {
-  children: PropTypes.node.isRequired,
-  darkMode: PropTypes.bool,
-  className: PropTypes.string,
-  onClick: PropTypes.func,
-  hoverable: PropTypes.bool
-};
 
 const EmptyState = ({ icon, title, subtitle, action }) => (
   <div className="empty-state">
@@ -667,22 +618,9 @@ const EmptyState = ({ icon, title, subtitle, action }) => (
   </div>
 );
 
-EmptyState.propTypes = {
-  icon: PropTypes.string,
-  title: PropTypes.string,
-  subtitle: PropTypes.string,
-  action: PropTypes.node
-};
-
 const SkeletonLoader = ({ type = 'text', width = '100%', height = '20px' }) => (
   <div className={`skeleton-loader ${type}`} style={{ width, height }}><div className="skeleton-shimmer" /></div>
 );
-
-SkeletonLoader.propTypes = {
-  type: PropTypes.string,
-  width: PropTypes.string,
-  height: PropTypes.string
-};
 
 const OfflineBanner = () => (
   <div className="offline-banner" role="alert">
@@ -722,11 +660,6 @@ const TourOverlay = ({ onComplete, onSkip }) => (
     </div>
   </div>
 );
-
-TourOverlay.propTypes = {
-  onComplete: PropTypes.func.isRequired,
-  onSkip: PropTypes.func.isRequired
-};
 
 // =============================================================================
 // SECTION 6: FEATURE COMPONENTS
@@ -1148,13 +1081,6 @@ const CurrencyConverter = ({ currencies, darkMode, liveData, onRefresh }) => {
   );
 };
 
-CurrencyConverter.propTypes = {
-  currencies: PropTypes.array.isRequired,
-  darkMode: PropTypes.bool,
-  liveData: PropTypes.object,
-  onRefresh: PropTypes.func.isRequired
-};
-
 // 6.2: Trading Components
 const CurrencyPairSelector = ({ selectedPair, onSelect }) => (
   <div className="pair-selector">
@@ -1169,11 +1095,6 @@ const CurrencyPairSelector = ({ selectedPair, onSelect }) => (
     </div>
   </div>
 );
-
-CurrencyPairSelector.propTypes = {
-  selectedPair: PropTypes.string.isRequired,
-  onSelect: PropTypes.func.isRequired
-};
 
 const OrderBook = ({ pair, currencies, darkMode }) => {
   const [bids, setBids] = useState([]);
@@ -1253,12 +1174,6 @@ const OrderBook = ({ pair, currencies, darkMode }) => {
   );
 };
 
-OrderBook.propTypes = {
-  pair: PropTypes.string.isRequired,
-  currencies: PropTypes.array.isRequired,
-  darkMode: PropTypes.bool
-};
-
 const AdvancedTradePanel = ({ portfolio, currencies, onExecuteTrade, darkMode, pair, onPairChange }) => {
   const [tradeConfig, setTradeConfig] = useState({
     direction: TRADE_DIRECTION.BUY,
@@ -1284,7 +1199,6 @@ const AdvancedTradePanel = ({ portfolio, currencies, onExecuteTrade, darkMode, p
 
   const calculateTrade = useCallback(() => {
     setIsCalculating(true);
-    // Use setTimeout to simulate async calculation and avoid render-blocking
     setTimeout(() => {
       const entryPrice = tradeConfig.orderType === 'market' ? currentRate : tradeConfig.limitPrice;
       const spread = TRADING_PAIRS.find(p => p.pair === pair)?.spread || 0.0001;
@@ -1328,23 +1242,6 @@ const AdvancedTradePanel = ({ portfolio, currencies, onExecuteTrade, darkMode, p
     calculateTrade();
   }, [tradeConfig, currentRate, calculateTrade]);
 
-  // Keyboard shortcut Ctrl+Enter to execute trade
-  const executeRef = useRef(() => {});
-  useEffect(() => {
-    executeRef.current = () => {
-      if (errors.length === 0 && Object.keys(fieldErrors).length === 0 && !isCalculating) {
-        handleExecuteTrade();
-      }
-    };
-  }, [errors, fieldErrors, isCalculating, calculations, tradeConfig]); // dependencies to capture current values
-
-  useKeyboardShortcut('Enter', () => {
-    // Only trigger when Ctrl is pressed
-    if (window.event && window.event.ctrlKey) {
-      executeRef.current();
-    }
-  }, true);
-
   const handleExecuteTrade = () => {
     if (errors.length > 0 || Object.keys(fieldErrors).length > 0 || isCalculating) return;
     onExecuteTrade({
@@ -1364,9 +1261,22 @@ const AdvancedTradePanel = ({ portfolio, currencies, onExecuteTrade, darkMode, p
       spreadCost: calculations.spreadCost,
       calculations
     });
-    // Reset fields
     setTradeConfig(prev => ({ ...prev, amount: 100, limitPrice: 0, stopPrice: 0, takeProfit: 0, stopLoss: 0 }));
   };
+
+  // Keyboard shortcut: Ctrl+Enter to execute trade
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        if (errors.length === 0 && Object.keys(fieldErrors).length === 0 && !isCalculating) {
+          handleExecuteTrade();
+        }
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [errors, fieldErrors, isCalculating, calculations, tradeConfig]); // Re-attach when these change
 
   const quickAmounts = useMemo(() => {
     const base = portfolio.totalValue * 0.01;
@@ -1575,15 +1485,6 @@ const AdvancedTradePanel = ({ portfolio, currencies, onExecuteTrade, darkMode, p
   );
 };
 
-AdvancedTradePanel.propTypes = {
-  portfolio: PropTypes.object.isRequired,
-  currencies: PropTypes.array.isRequired,
-  onExecuteTrade: PropTypes.func.isRequired,
-  darkMode: PropTypes.bool,
-  pair: PropTypes.string.isRequired,
-  onPairChange: PropTypes.func.isRequired
-};
-
 const PortfolioDashboard = ({ portfolio, trades, darkMode }) => {
   const metrics = useMemo(() => {
     const winningTrades = trades.filter(t =>
@@ -1689,12 +1590,6 @@ const PortfolioDashboard = ({ portfolio, trades, darkMode }) => {
       </div>
     </Card>
   );
-};
-
-PortfolioDashboard.propTypes = {
-  portfolio: PropTypes.object.isRequired,
-  trades: PropTypes.array.isRequired,
-  darkMode: PropTypes.bool
 };
 
 const AdvancedTradeHistory = ({ trades, onCloseTrade, onCancelOrder, darkMode }) => {
@@ -1840,13 +1735,6 @@ const AdvancedTradeHistory = ({ trades, onCloseTrade, onCancelOrder, darkMode })
   );
 };
 
-AdvancedTradeHistory.propTypes = {
-  trades: PropTypes.array.isRequired,
-  onCloseTrade: PropTypes.func.isRequired,
-  onCancelOrder: PropTypes.func.isRequired,
-  darkMode: PropTypes.bool
-};
-
 // =============================================================================
 // SECTION 7: MAIN APPLICATION COMPONENT
 // =============================================================================
@@ -1883,6 +1771,7 @@ const LiveCurrencySimulator = () => {
     catch { return true; }
   });
   const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [selectedTimeFrame, setSelectedTimeFrame] = useState(TIME_FRAMES[1]); // Retained
   const [activeTab, setActiveTab] = useState('converter');
   const [selectedPair, setSelectedPair] = useState(() => localStorage.getItem('selectedPair') || 'USD/EUR');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -1915,11 +1804,11 @@ const LiveCurrencySimulator = () => {
     catch (e) { console.warn('Failed to save selected pair', e); }
   }, [selectedPair]);
 
+  // Fixed: Do not show toast on initial mount, only on actual online/offline transitions.
+  const isInitialMount = useRef(true);
   useEffect(() => {
-    // Only show notification on change of online status, not on mount
-    const initial = useRef(true);
-    if (initial.current) {
-      initial.current = false;
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
       return;
     }
     showNotification(
@@ -1930,7 +1819,7 @@ const LiveCurrencySimulator = () => {
   }, [isOnline]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const showNotification = useCallback((message, type = 'info') => {
-    const id = Date.now();
+    const id = Date.now() + Math.random(); // Ensure unique ID
     setNotifications(prev => [...prev, { id, message, type }]);
     setTimeout(() => setNotifications(prev => prev.filter(n => n.id !== id)), 5000);
   }, []);
@@ -2144,7 +2033,21 @@ const LiveCurrencySimulator = () => {
             </button>
           ))}
         </div>
-        {/* Timeframe selector removed as it was not used */}
+        {/* Timeframe selector retained as in original */}
+        <div className="timeframe-selector">
+          <label className="timeframe-label">Time Frame:</label>
+          <div className="timeframe-buttons">
+            {TIME_FRAMES.map(tf => (
+              <button
+                key={tf.label}
+                onClick={() => setSelectedTimeFrame(tf)}
+                className={`timeframe-button ${selectedTimeFrame.label === tf.label ? 'active' : ''}`}
+              >
+                {tf.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       <Notification notifications={notifications} removeNotification={(id) => setNotifications(prev => prev.filter(n => n.id !== id))} />
@@ -2259,5 +2162,5 @@ const LiveCurrencySimulator = () => {
   );
 };
 
-// Last updated: 2026-05-15 (Improved)
+// Last updated: 2026-05-15 (Fixed)
 export default LiveCurrencySimulator;

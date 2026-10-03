@@ -6,8 +6,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'ASAP~FUNDS - Trading Platform',
-  description: 'Professional forex trading platform',
+  title: 'ASAP Funds — Currency intelligence for modern teams',
+  description: 'Convert currencies, track your portfolio, and make smarter international money decisions from one workspace.',
 }
 
 export default function RootLayout({ children }) {

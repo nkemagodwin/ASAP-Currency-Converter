@@ -134,14 +134,6 @@ const formatLargeNumber = (value) => {
   return `$${formatNumber(value)}`;
 };
 
-const debounce = (func, wait) => {
-  let timeout;
-  return (...args) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-};
-
 // =============================================================================
 // SECTION 3: SERVICES
 // =============================================================================
@@ -616,10 +608,6 @@ const EmptyState = ({ icon, title, subtitle, action }) => (
     <p className="empty-subtitle">{subtitle}</p>
     {action}
   </div>
-);
-
-const SkeletonLoader = ({ type = 'text', width = '100%', height = '20px' }) => (
-  <div className={`skeleton-loader ${type}`} style={{ width, height }}><div className="skeleton-shimmer" /></div>
 );
 
 const OfflineBanner = () => (
@@ -1242,7 +1230,7 @@ const AdvancedTradePanel = ({ portfolio, currencies, onExecuteTrade, darkMode, p
     calculateTrade();
   }, [tradeConfig, currentRate, calculateTrade]);
 
-  const handleExecuteTrade = () => {
+  const handleExecuteTrade = useCallback(() => {
     if (errors.length > 0 || Object.keys(fieldErrors).length > 0 || isCalculating) return;
     onExecuteTrade({
       id: Date.now(),
@@ -1262,7 +1250,7 @@ const AdvancedTradePanel = ({ portfolio, currencies, onExecuteTrade, darkMode, p
       calculations
     });
     setTradeConfig(prev => ({ ...prev, amount: 100, limitPrice: 0, stopPrice: 0, takeProfit: 0, stopLoss: 0 }));
-  };
+  }, [errors, fieldErrors, isCalculating, onExecuteTrade, pair, tradeConfig, calculations]);
 
   // Keyboard shortcut: Ctrl+Enter to execute trade
   useEffect(() => {
@@ -1276,7 +1264,7 @@ const AdvancedTradePanel = ({ portfolio, currencies, onExecuteTrade, darkMode, p
     };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
-  }, [errors, fieldErrors, isCalculating, calculations, tradeConfig]); // Re-attach when these change
+  }, [errors, fieldErrors, isCalculating, calculations, tradeConfig, handleExecuteTrade]);
 
   const quickAmounts = useMemo(() => {
     const base = portfolio.totalValue * 0.01;

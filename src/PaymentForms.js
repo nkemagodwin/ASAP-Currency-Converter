@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 
 // Card Payment Form
 export const CardPaymentForm = ({ paymentDetails, onUpdate, darkMode }) => {
-  const [errors, setErrors] = useState({});
-
   const formatCardNumber = (value) => {
     const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
     const matches = v.match(/\d{4,16}/g);
@@ -86,7 +84,6 @@ export const CardPaymentForm = ({ paymentDetails, onUpdate, darkMode }) => {
           onChange={handleChange}
           placeholder="1234 5678 9012 3456"
           maxLength="19"
-          className={errors.cardNumber ? 'error' : ''}
         />
       </div>
 
